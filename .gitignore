@@ -5,7 +5,7 @@ node_modules/
 .env
 
 # Claves de servicio de Firebase
-proyecto-hosteleria-b6c98-firebase-adminsdk-fbsvc-5a68c8f64a
+proyecto-hosteleria-b6c98-firebase-adminsdk-fbsvc-5a68c8f64a.json
 
 # Logs
 *.log
