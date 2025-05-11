@@ -14,5 +14,16 @@ Subir/actualizar información del local al branch:
     - git commit -m "nombre_commit"
     - git push
 
+Instalaciones:
+    - npm install express firebase-admin
+    - npm install -g firebase-tools
+    - npm install cors (Solo para pruebas, despues no usar)
+
+Problemas solucionados:
+    · Deploy en Firebase Functions:
+        - Instalar Node 20 por versiones de firebase
+        - Edición de index.js y package,json en /functions e inclusión del script 'lint'
+        - Borrado de package-lock y node_modules y reinstalación de estos con parçametros correctos
+
 
 Created by Cristian Morata.
