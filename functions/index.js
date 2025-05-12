@@ -18,14 +18,71 @@
 //   response.send("Hello from Firebase!");
 // });
 
+// const { onRequest } = require("firebase-functions/v2/https");
+// const cors = require('cors');  // Importa el paquete CORS
+
+// // Crea una instancia de CORS
+// const corsHandler = cors({ origin: true });  // Esto permitirá solicitudes de cualquier origen
+
+// exports.helloWorld = onRequest((req, res) => {
+//   corsHandler(req, res, () => {  // Usamos CORS en la solicitud
+//     res.send("Hello from Firebase!");
+//   });
+// });
+
 const { onRequest } = require("firebase-functions/v2/https");
-const cors = require('cors');  // Importa el paquete CORS
+const cors = require('cors');
+const admin = require("firebase-admin");
 
-// Crea una instancia de CORS
-const corsHandler = cors({ origin: 'http://127.0.0.1:5500/pruebaFront.html' });  // Esto permitirá solicitudes de cualquier origen
+// Inicializa Firebase Admin solo una vez
+if (!admin.apps.length) {
+  admin.initializeApp({
+    databaseURL: "https://proyecto-hosteleria-b6c98-default-rtdb.firebaseio.com/"
+  });
+}
 
-exports.helloWorld = onRequest((req, res) => {
-  corsHandler(req, res, () => {  // Usamos CORS en la solicitud
-    res.send("Hello from Firebase!");
+const db = admin.database();
+const corsHandler = cors({ origin: true });
+
+exports.agregarProducto = onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    if (req.method !== "POST") {
+      return res.status(405).send("Método no permitido");
+    }
+
+    const { nombre, descripcion } = req.body;
+
+    if (!nombre || !descripcion) {
+      return res.status(400).send("Faltan campos requeridos: nombre y descripcion");
+    }
+
+    try {
+      // Transacción para obtener e incrementar el contador
+      const contadorRef = db.ref("producto-venta-contador");
+      const result = await contadorRef.transaction(current => {
+        return (current || 0) + 1;
+      });
+
+      if (!result.committed) {
+        return res.status(500).send("Error al generar ID");
+      }
+
+      const nuevoId = result.snapshot.val();
+      const productoRef = db.ref(`producto-venta/${nuevoId}`);
+
+      await productoRef.set({
+        nombre,
+        descripcion,
+        creadoEn: admin.database.ServerValue.TIMESTAMP
+      });
+
+      return res.status(200).send({
+        mensaje: "Producto agregado exitosamente",
+        id: nuevoId
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      return res.status(500).send("Error interno del servidor");
+    }
   });
 });
