@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -29,4 +29,54 @@
     </script>
 </body>
 
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agregar Producto</title>
+</head>
+<body>
+  <h1>Agregar Producto</h1>
+  <form id="productoForm">
+    <input type="text" id="nombre" placeholder="Nombre" required />
+    <input type="text" id="descripcion" placeholder="Descripción" required />
+    <button type="submit">Enviar</button>
+  </form>
+
+  <p id="respuesta"></p>
+
+  <script>
+    const form = document.getElementById("productoForm");
+    const respuesta = document.getElementById("respuesta");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nombre = document.getElementById("nombre").value;
+      const descripcion = document.getElementById("descripcion").value;
+
+      try {
+        const res = await fetch("https://agregarproducto-rs2gjhs4iq-uc.a.run.app", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ nombre, descripcion })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          respuesta.textContent = `✅ Producto agregado con ID: ${data.id}`;
+        } else {
+          respuesta.textContent = `❌ Error: ${data}`;
+        }
+      } catch (err) {
+        console.error("Error en la solicitud:", err);
+        respuesta.textContent = "❌ Error al conectar con el servidor";
+      }
+    });
+  </script>
+</body>
 </html>
