@@ -1,0 +1,11 @@
+@if (productos$ | async; as productos) {
+    <ul>
+        @for (producto of productos; track producto) {
+            <li >
+                <p id="{{ producto.id }}">{{ producto.nombre }} - {{ producto.precio}}€</p>
+            </li>
+        }
+    </ul>
+} @else {
+    <p>No hay productos disponibles.</p>
+}
