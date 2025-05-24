@@ -1,0 +1,13 @@
+<div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <header-component></header-component>
+
+  <div class="flex flex-1">
+    <sidebar></sidebar>
+
+    <main class="flex-1 p-4 overflow-y-auto">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <footer-component></footer-component>
+</div>

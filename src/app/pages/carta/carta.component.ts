@@ -1,15 +1,16 @@
 import { Component, inject } from '@angular/core';
-import { AdministracionService} from '../../services/administracion.service';
+import { AdministracionService } from '../../services/administracion.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'listado-productos',
+  selector: 'carta',
   imports: [CommonModule],
-  templateUrl: './listado-productos.component.html',
-  styleUrl: './listado-productos.component.css'
+  templateUrl: './carta.component.html',
+  styleUrl: './carta.component.css'
 })
-export class ListadoProductosComponent{
+export class CartaComponent {
+
   service = inject(AdministracionService);
   productos$: Observable<any>;
 

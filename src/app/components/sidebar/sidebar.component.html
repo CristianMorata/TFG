@@ -1,0 +1,17 @@
+<div [ngClass]="{'w-64': !isCollapsed, 'w-20': isCollapsed}" class="bg-gray-800 dark:bg-gray-900 text-white transition-all duration-300 h-full">
+  <button (click)="toggleSidebar()" class="p-2 w-full flex items-center justify-center hover:bg-gray-700">
+    <span *ngIf="!isCollapsed">⏴</span>
+    <span *ngIf="isCollapsed">⏵</span>
+  </button>
+
+  <nav class="flex flex-col space-y-2 mt-4 transition-all duration-300">
+    <a routerLink="/carta" routerLinkActive="bg-gray-700" class="flex items-center space-x-2 p-2 rounded hover:bg-gray-700 transition duration-300">
+      <span class="material-icons">menu_book</span>
+      <span *ngIf="!isCollapsed">Carta</span>
+    </a>
+    <a routerLink="/mesa" routerLinkActive="bg-gray-700" class="flex items-center space-x-2 p-2 rounded hover:bg-gray-700 transition duration-300">
+      <span class="material-icons">table_restaurant</span>
+      <span *ngIf="!isCollapsed">Mesas</span>
+    </a>
+  </nav>
+</div>

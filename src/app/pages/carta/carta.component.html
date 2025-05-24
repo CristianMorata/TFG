@@ -1,3 +1,5 @@
+<div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300">
+  <h1 class="text-2xl font-bold mb-4">Carta</h1>
 @if (productos$ | async; as productos) {
     <ul>
         @for (producto of productos; track producto) {
@@ -9,3 +11,4 @@
 } @else {
     <p>No hay productos disponibles.</p>
 }
+</div>
