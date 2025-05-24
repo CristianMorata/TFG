@@ -13,7 +13,7 @@ import { map, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class AdministracionService {
+export class ServiciosService {
   private http = inject(HttpClient);
   private readonly apiUrl = 'https://listarproductosventa-rs2gjhs4iq-uc.a.run.app';
 

@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponentComponent } from "./components/header-component/header-component.component";
-import { FooterComponentComponent } from "./components/footer-component/footer-component.component";
-import { LayoutComponent } from "./layout/layout/layout.component";
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, LucideAngularModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'lacalica-front-dev';

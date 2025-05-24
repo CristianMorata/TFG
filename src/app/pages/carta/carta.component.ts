@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AdministracionService } from '../../services/administracion.service';
+import { ServiciosService } from '../../services/servicios.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class CartaComponent {
 
-  service = inject(AdministracionService);
+  service = inject(ServiciosService);
   productos$: Observable<any>;
 
   constructor() {
