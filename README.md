@@ -1,4 +1,4 @@
-producto-venta
+producto-venta {
 	categorias {
 		POST - agregarCategoriaProductoVenta - https://agregarcategoriaproductoventa-rs2gjhs4iq-uc.a.run.app {
 			categoria: string
