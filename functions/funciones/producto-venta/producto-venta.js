@@ -16,6 +16,7 @@ exports.agregarProductoVenta = onRequest((req, res) => {
       alergenos,
       visible,
       novedad,
+      // destino,   // Posible campo para futuras implementaciones. Define donde se mandará el producto para ser preparado (cocina, barra, etc.)
       categoria,
       tipo_comida,  // Este campo solo se usará para productos de tipo comida
       anotaciones,
@@ -68,11 +69,10 @@ exports.agregarProductoVenta = onRequest((req, res) => {
       // Opcionales
       if (descripcion) nuevoProducto.descripcion = descripcion;
       if (alergenos) nuevoProducto.alergenos = alergenos;
-      if (intolerancias) nuevoProducto.intolerancias = intolerancias;
       if (anotaciones) nuevoProducto.anotaciones = anotaciones;
       if (categoria === "comida" && tipo_comida) {
         nuevoProducto.tipo_comida = tipo_comida;
-      } else {
+      } else if (categoria === "comida") {
         nuevoProducto.tipo_comida = "uncategorized"; // Valor por defecto si no es comida
       }
 
@@ -138,8 +138,9 @@ exports.modificarProductoVenta = onRequest((req, res) => {
       alergenos,
       visible,
       novedad,
-      tipo_comida,
+      // destino,
       categoria,
+      tipo_comida,
       anotaciones,
     } = req.body;
 

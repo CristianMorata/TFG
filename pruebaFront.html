@@ -1,273 +1,110 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8">
-  <title>Panel de Gestión</title>
-  <style>
-    body {
-      font-family: Arial;
-      padding: 20px;
-    }
-
-    section {
-      margin-bottom: 40px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 20px;
-    }
-
-    input,
-    select,
-    textarea {
-      display: block;
-      margin: 5px 0 15px;
-      padding: 5px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 8px 16px;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    th,
-    td {
-      border: 1px solid #ccc;
-      padding: 6px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #eee;
-    }
-
-    h2 {
-      margin-top: 0;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Gestión de Productos</title>
 </head>
-
 <body>
-  <h1>Panel de Pruebas</h1>
+  <h1>Pruebas de producto-venta</h1>
 
-  <!-- Agregar Producto de Venta -->
   <section>
-    <h2>Agregar Producto de Venta</h2>
-    <form id="formProducto">
-      <input name="nombre" placeholder="Nombre" required />
-      <input name="descripcion" placeholder="Descripción" required />
-      <input name="precio" type="number" step="0.01" placeholder="Precio" required />
-      <input name="tipo_producto" placeholder="Tipo de producto" required />
-      <input name="alergenos" placeholder="Alergenos (coma separados)" />
-      <input name="intolerancias" placeholder="Intolerancias (coma separados)" />
-      <input name="anadido_por" placeholder="Añadido por" />
-      <input name="fecha_anadido" placeholder="Fecha añadido (opcional)" />
-      <input name="anotaciones" placeholder="Anotaciones" />
-      <label><input type="checkbox" name="visible" /> Visible</label>
-      <label><input type="checkbox" name="es_nuevo" /> Es nuevo</label>
-      <button type="submit">Agregar</button>
-    </form>
-    <div id="resProducto"></div>
-    <button onclick="listarProductos()">📋 Ver Productos</button>
-    <table id="tablaProductos">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Precio</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <h2>Agregar producto</h2>
+    <button onclick="agregarProducto()">Agregar</button>
   </section>
 
-  <!-- Modificar Producto de Venta -->
   <section>
-    <h2>Modificar Producto de Venta</h2>
-    <form id="formEditarProducto">
-      <input name="id" placeholder="ID del producto a modificar" required />
-      <input name="nombre" placeholder="Nombre (opcional)" />
-      <input name="descripcion" placeholder="Descripción (opcional)" />
-      <input name="precio" type="number" step="0.01" placeholder="Precio (opcional)" />
-      <input name="tipo_producto" placeholder="Tipo de producto (opcional)" />
-      <input name="alergenos" placeholder="Alergenos (coma separados)" />
-      <input name="intolerancias" placeholder="Intolerancias (coma separados)" />
-      <input name="anadido_por" placeholder="Añadido por" />
-      <input name="fecha_anadido" placeholder="Fecha añadido (opcional)" />
-      <input name="anotaciones" placeholder="Anotaciones" />
-      <label><input type="checkbox" name="visible" /> Visible</label>
-      <label><input type="checkbox" name="es_nuevo" /> Es nuevo</label>
-      <button type="submit">Modificar</button>
-    </form>
-    <div id="resEditarProducto"></div>
+    <h2>Listar productos</h2>
+    <button onclick="listarProductos()">Listar</button>
+    <pre id="listaProductos"></pre>
   </section>
 
-  <!-- Agregar Pedido a Proveedor -->
   <section>
-    <h2>Agregar Pedido a Proveedor</h2>
-    <form id="formPedido">
-      <input name="proveedor" placeholder="Proveedor" />
-      <input name="presupuesto" type="number" step="0.01" placeholder="Presupuesto" />
-      <input name="fecha_entrega" placeholder="Fecha entrega" />
-      <input name="tipo" placeholder="Tipo" />
-      <input name="alergenos" placeholder="Alergenos (coma separados)" />
-      <input name="intolerancias" placeholder="Intolerancias (coma separados)" />
-      <button type="submit">Agregar</button>
-    </form>
-    <div id="resPedido"></div>
+    <h2>Modificar producto</h2>
+    <button onclick="modificarProducto()">Modificar</button>
   </section>
 
-  <!-- Agregar Empleado -->
   <section>
-    <h2>Agregar Empleado</h2>
-    <form id="formEmpleado">
-      <input name="nombre" placeholder="Nombre" />
-      <input name="apellidos" placeholder="Apellidos" />
-      <input name="fecha_nacimiento" placeholder="Fecha nacimiento" />
-      <input name="telefono" placeholder="Teléfono" />
-      <input name="email" placeholder="Email" />
-      <input name="puesto" placeholder="Puesto" />
-      <input name="fecha_contratacion" placeholder="Fecha contratación" />
-      <input name="tipo_jornada" placeholder="Tipo de jornada" />
-      <input name="salario" type="number" placeholder="Salario" />
-      <input name="estado" placeholder="Estado" />
-      <input name="horario" placeholder="Horario" />
-      <input name="idiomas" placeholder="Idiomas (coma separados)" />
-      <textarea name="observaciones" placeholder="Observaciones"></textarea>
-      <button type="submit">Agregar</button>
-    </form>
-    <div id="resEmpleado"></div>
-    <button onclick="listarEmpleados()">📋 Ver Empleados</button>
-    <table id="tablaEmpleados">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Puesto</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <!-- Crear o Modificar Mesa -->
-  <section>
-    <h2>Crear / Modificar Mesa</h2>
-    <form id="formMesa">
-      <input name="mesaId" placeholder="ID de la mesa (ej. mesa_1)" required />
-      <textarea name="contenido" placeholder='Contenido (array de productos en JSON)' rows="3"></textarea>
-      <input name="estado" placeholder="Estado (libre, ocupada...)" />
-      <textarea name="anotaciones" placeholder="Anotaciones" rows="2"></textarea>
-      <button type="submit">Guardar / Modificar</button>
-    </form>
-    <div id="resMesa"></div>
-  </section>
-
-  <!-- Cerrar Mesa -->
-  <section>
-    <h2>Cerrar Mesa</h2>
-    <form id="formCerrarMesa">
-      <input name="mesaId" placeholder="ID de la mesa a cerrar" required />
-      <button type="submit">Cerrar y Archivar</button>
-    </form>
-    <div id="resCerrarMesa"></div>
+    <h2>Eliminar producto</h2>
+    <button onclick="eliminarProducto()">Eliminar</button>
   </section>
 
   <script>
-    const endpoints = {
-      agregarProductoVenta: "https://agregarproductoventa-rs2gjhs4iq-uc.a.run.app",
-      listarProductosVenta: "https://listarproductosventa-rs2gjhs4iq-uc.a.run.app",
-      agregarPedidoProveedor: "https://agregarpedidoproveedor-rs2gjhs4iq-uc.a.run.app",
-      agregarEmpleado: "https://agregarempleado-rs2gjhs4iq-uc.a.run.app",
-      listarEmpleados: "https://listarempleados-rs2gjhs4iq-uc.a.run.app",
-      guardarOModificarMesa: "https://guardaromodificarmesa-rs2gjhs4iq-uc.a.run.app",
-      cerrarMesa: "https://cerrarmesa-rs2gjhs4iq-uc.a.run.app",
-      modificarProductoVenta: "https://modificarproductoventa-rz8pjh4iq-uc.a.run.app",
+    const BASE_URL = "https://";
+
+    const urls = {
+      agregar: "https://agregarproductoventa-rs2gjhs4iq-uc.a.run.app",
+      listar: "https://listarproductosventa-rs2gjhs4iq-uc.a.run.app",
+      modificar: "https://modificarproductoventa-rs2gjhs4iq-uc.a.run.app",
+      eliminar: "https://eliminarproductoventa-rs2gjhs4iq-uc.a.run.app"
     };
 
-    async function enviarFormulario(formId, url, salidaId, extraParser = data => data) {
-      const form = document.getElementById(formId);
-      const salida = document.getElementById(salidaId);
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const data = Object.fromEntries(new FormData(form));
-        // Conversión especial de campos JSON o arrays
-        if (data.alergenos) data.alergenos = data.alergenos.split(",").map(x => x.trim());
-        if (data.intolerancias) data.intolerancias = data.intolerancias.split(",").map(x => x.trim());
-        if (data.idiomas) data.idiomas = data.idiomas.split(",").map(x => x.trim());
-        if (data.precio) data.precio = parseFloat(data.precio);
-        if (data.salario) data.salario = parseFloat(data.salario);
-        if (data.presupuesto) data.presupuesto = parseFloat(data.presupuesto);
-        if (data.visible) data.visible = true;
-        if (data.es_nuevo) data.es_nuevo = true;
-        if (data.contenido) {
-          try {
-            data.contenido = JSON.parse(data.contenido);
-          } catch (e) {
-            salida.textContent = "⚠️ Error: contenido no es JSON válido";
-            return;
-          }
-        }
+    async function agregarProducto() {
+      const body = {
+        nombre: "Café cortado",
+        // descripcion: "Café con un poco de leche",
+        precio: 1.5,
+        categoria: "bebidas",
+        alergenos: ["lácteos"],
+        // visible: true,
+        novedad: true,
+        tipo_comida: "", // vacía ya que no es "comida"
+        anotaciones: "Servir caliente"
+      };
 
-        try {
-          const res = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(extraParser(data))
-          });
-          const json = await res.json();
-          salida.textContent = res.ok ? `✅ ${json.mensaje || 'Éxito'}` : `❌ ${JSON.stringify(json)}`;
-        } catch (err) {
-          salida.textContent = "❌ Error en la solicitud";
-        }
+      const res = await fetch(urls.agregar, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
       });
+
+      const data = await res.json();
+      console.log("Producto agregado:", data);
+      alert(JSON.stringify(data, null, 2));
     }
 
-    // Asignar formularios
-    enviarFormulario("formProducto", endpoints.agregarProductoVenta, "resProducto");
-    enviarFormulario("formPedido", endpoints.agregarPedidoProveedor, "resPedido");
-    enviarFormulario("formEmpleado", endpoints.agregarEmpleado, "resEmpleado");
-    enviarFormulario("formMesa", endpoints.guardarOModificarMesa, "resMesa");
-    enviarFormulario("formCerrarMesa", endpoints.cerrarMesa, "resCerrarMesa");
-    enviarFormulario("formEditarProducto", endpoints.modificarProductoVenta, "resEditarProducto");
-
-    // Listado de productos
     async function listarProductos() {
-      const tabla = document.querySelector("#tablaProductos tbody");
-      tabla.innerHTML = "";
-      try {
-        const res = await fetch(endpoints.listarProductosVenta);
-        const datos = await res.json();
-        datos.forEach(p => {
-          tabla.innerHTML += `<tr><td>${p.id}</td><td>${p.nombre}</td><td>${p.precio || ""}</td></tr>`;
-        });
-      } catch {
-        tabla.innerHTML = "<tr><td colspan='3'>❌ Error</td></tr>";
-      }
+      const res = await fetch(urls.listar);
+      const data = await res.json();
+      document.getElementById("listaProductos").textContent = JSON.stringify(data, null, 2);
     }
 
-    // Listado de empleados
-    async function listarEmpleados() {
-      const tabla = document.querySelector("#tablaEmpleados tbody");
-      tabla.innerHTML = "";
-      try {
-        const res = await fetch(endpoints.listarEmpleados);
-        const datos = await res.json();
-        datos.forEach(e => {
-          tabla.innerHTML += `<tr><td>${e.id}</td><td>${e.nombre} ${e.apellidos}</td><td>${e.puesto || ""}</td></tr>`;
-        });
-      } catch {
-        tabla.innerHTML = "<tr><td colspan='3'>❌ Error</td></tr>";
-      }
+    async function modificarProducto() {
+      const body = {
+        id: "1", // Cambia este ID a uno real existente
+        categoria: "bebidas",
+        nombre: "Café cortado doble",
+        precio: 1.8,
+        novedad: false,
+        anotaciones: "Ahora con más café"
+      };
+
+      const res = await fetch(urls.modificar, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      console.log("Producto modificado:", data);
+      alert(JSON.stringify(data, null, 2));
+    }
+
+    async function eliminarProducto() {
+      const body = {
+        id: "1", // Cambia este ID a uno real existente
+        categoria: "bebidas"
+      };
+
+      const res = await fetch(urls.eliminar, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      console.log("Producto eliminado:", data);
+      alert(JSON.stringify(data, null, 2));
     }
   </script>
 </body>
-
 </html>
