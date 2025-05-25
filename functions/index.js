@@ -12,7 +12,7 @@ const { onRequest } = require("firebase-functions/v2/https");
 // Inyectar las funciones de cada módulo
 const { agregarEmpleado, listarEmpleados, modificarEmpleado, eliminarEmpleado } = require("./funciones/empleados/empleados.js");
 const { guardarOModificarMesa, cerrarMesa } = require("./funciones/mesa/mesa.js");
-const { agregarPedidoProveedor } = require("./funciones/producto-proveedor/producto-proveedor.js");
+const { agregarPedidoProveedor } = require("./funciones/producto-proveedor/pedido-proveedor.js");
 const { agregarProductoVenta, listarProductosVenta, modificarProductoVenta, eliminarProductoVenta } = require("./funciones/producto-venta/producto-venta.js");
 const { agregarCategoriaProductoVenta, listarCategoriasProductoVenta } = require("./funciones/producto-venta/categorias.js");
 
