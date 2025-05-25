@@ -1,7 +1,9 @@
-producto-venta
+!! - Obligatorio
+
+producto-venta {
 	categorias {
 		POST - agregarCategoriaProductoVenta - https://agregarcategoriaproductoventa-rs2gjhs4iq-uc.a.run.app {
-			categoria: string
+			!! categoria: string
 		}
 			
 		GET - listarCategoriasProductoVenta - https://listarcategoriasproductoventa-rs2gjhs4iq-uc.a.run.app
@@ -9,22 +11,21 @@ producto-venta
 
 	producto-venta {
 		POST - agregarProductoVenta - https://agregarproductoventa-rs2gjhs4iq-uc.a.run.app {
-			nombre,
+			!! nombre,
       			descripcion,
-      			precio,
+      			!! precio,
       			alergenos,
-      			intolerancias,
       			visible,
       			novedad,
-      			tipo_producto,
-      			categoria,
+      			tipo_comida,
+      			!! categoria,
       			anotaciones,
 		}
 		
 		GET - listarProductosVenta - https://listarproductosventa-rs2gjhs4iq-uc.a.run.app
 
 		POST - modificarProductoVenta - https://modificarproductoventa-rs2gjhs4iq-uc.a.run.app {
-			id,
+			!! id,
       			nombre,
       			descripcion,
       			precio,
@@ -32,9 +33,14 @@ producto-venta
       			intolerancias,
       			visible,
       			novedad,
-      			tipo_producto,
-      			categoria,
+      			tipo_comida,
+      			!! categoria,
       			anotaciones,
+		}
+
+		POST - eliminarProductoVenta - {
+			!! id,
+			!! categoria,
 		}
 	}
 }
