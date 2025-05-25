@@ -4,7 +4,7 @@
 //   selector: 'header-component',
 //   imports: [],
 //   templateUrl: './header-component.component.html',
-//   styleUrl: './header-component.component.css'
+//   styleUrls: ['./header-component.component.css']
 // })
 // export class HeaderComponentComponent {
 //   toggleDarkMode() {
@@ -20,15 +20,19 @@
 //   }
 // }
 // }
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { LucideAngularModule,  Moon } from 'lucide-angular';
 
 @Component({
   selector: 'header-component',
+  imports: [ CommonModule, LucideAngularModule ],
   templateUrl: './header-component.component.html',
-  styleUrls: ['./header-component.component.css']
+  styleUrls: ['./header-component.component.css'],
 })
 export class HeaderComponentComponent implements OnInit {
   isDarkMode = false;
+  readonly moon = Moon;
 
   toggleDarkMode() {
     const html = document.documentElement;
@@ -42,6 +46,8 @@ export class HeaderComponentComponent implements OnInit {
     this.isDarkMode = savedTheme === 'dark';
     if (this.isDarkMode) {
       document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
   }
 }

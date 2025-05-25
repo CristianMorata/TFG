@@ -1,5 +1,5 @@
 <div [ngClass]="{'w-64': !isCollapsed, 'w-20': isCollapsed}" class="bg-gray-800 dark:bg-gray-900 text-white transition-all duration-300 h-full shadow-lg rounded-r-xl">
-  <button (click)="toggleSidebar()" class="p-2 w-full flex items-center justify-center hover:bg-gray-700 transition-transform duration-300 hover:scale-105">
+  <button (click)="toggleSidebar()" class="p-2 w-full flex items-center justify-center hover:bg-gray-700 transition-transform duration-300 rounded-r-xl">
     <span *ngIf="!isCollapsed">⏴</span>
     <span *ngIf="isCollapsed">⏵</span>
   </button>

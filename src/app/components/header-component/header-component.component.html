@@ -11,16 +11,15 @@
   </button>
 </header> -->
 
-<header class="bg-blue-600 dark:bg-gray-900 text-white p-4 flex justify-between items-center shadow-md transition-all duration-300">
-  <span class="text-xl font-bold">Mi Restaurante</span>
+<header
+  class="bg-blue-600 dark:bg-gray-900 text-white p-4 flex justify-between items-center shadow-md transition-all duration-300"
+>
+  <span class="text-xl font-bold">La Calica</span>
 
-  <button (click)="toggleDarkMode()"
-          class="bg-white dark:bg-gray-800 text-black dark:text-white px-3 py-1 rounded-full transition-all duration-300 hover:scale-110 flex items-center gap-2 shadow-lg">
-    <span class="transition duration-300 text-lg">
-      {{ isDarkMode ? 'luna' : 'sol' }}
-    </span>
-    <span class="hidden sm:inline">
-      {{ isDarkMode ? '' : '' }}
-    </span>
+  <button
+    (click)="toggleDarkMode()"
+    class="p-2 rounded bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
+  >
+    <lucide-icon name="my-icon" [img]="moon" class="w-5 h-5"></lucide-icon>
   </button>
 </header>
