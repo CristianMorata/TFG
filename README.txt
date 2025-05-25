@@ -30,7 +30,6 @@ producto-venta {
       			descripcion,
       			precio,
       			alergenos,
-      			intolerancias,
       			visible,
       			novedad,
       			tipo_comida,
@@ -76,7 +75,26 @@ mesa {
 empelados {
 	empelados {
 		POST - 	agregarEmpleado - https://agregarempleado-rs2gjhs4iq-uc.a.run.app {
-			nombre,
+			!! nombre,
+            		!! apellidos,
+            		fecha_nacimiento,
+            		!! telefono,
+            		!! email,
+            		!! puesto,
+            		fecha_contratacion,
+            		tipo_jornada,
+            		!! salario,
+            		!! estado,
+            		horario,
+            		idiomas,
+            		observaciones
+		}
+
+		GET - listarEmpleados - https://listarempleados-rs2gjhs4iq-uc.a.run.app
+
+		POST - modificarEmpleado - {
+			!! id,
+            		nombre,
             		apellidos,
             		fecha_nacimiento,
             		telefono,
@@ -91,7 +109,9 @@ empelados {
             		observaciones
 		}
 
-		GET - listarEmpleados - https://listarempleados-rs2gjhs4iq-uc.a.run.app
+		POST - eliminarEmpleado - {
+			!! id
+		}
 	}
 }
 	
