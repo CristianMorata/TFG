@@ -38,7 +38,7 @@ producto-venta {
       			anotaciones,
 		}
 
-		POST - eliminarProductoVenta - {
+		POST - eliminarProductoVenta - https://eliminarproductoventa-rs2gjhs4iq-uc.a.run.app {
 			!! id,
 			!! categoria,
 		}
