@@ -8,36 +8,46 @@ exports.agregarProductoVenta = onRequest((req, res) => {
       return res.status(405).send("Método no permitido");
     }
 
+    // Extraer los campos del cuerpo de la solicitud
     const {
       nombre,
       descripcion,
       precio,
       alergenos,
-      intolerancias,
       visible,
       novedad,
-      tipo_producto,
       categoria,
+      tipo_comida,  // Este campo solo se usará para productos de tipo comida
       anotaciones,
     } = req.body;
 
-    // Validaciones básicas
-    if (!nombre || !descripcion || precio == null || !tipo_producto || !categoria) {
-      return res.status(400).send("Faltan campos requeridos: nombre, descripcion, precio, tipo_producto, categoria");
+    // Validaciones de los campos requeridos
+    const camposRequeridos = {
+      nombre,
+      precio,
+      categoria
+    };
+
+    const camposFaltantes = Object.entries(camposRequeridos)
+      .filter(([key, value]) => value === undefined || value === null || value === '')
+      .map(([key]) => key);
+
+    if (camposFaltantes.length > 0) {
+      return res.status(400).send(
+        `Faltan campos requeridos: ${camposFaltantes.join(", ")}`
+      );
     }
 
     // Validar que la categoría sea una de las permitidas
-    const categoriasValidas = ["bebidas", "comida", "cocktails"];
-    if (!categoriasValidas.includes(categoria)) {
-      return res.status(400).send("Categoría no válida. Debe ser 'bebidas', 'comida' o 'cocktails'");
-    }
+    // const categoriasValidas = ["bebidas", "comida", "cocktails"];
+    // if (!categoriasValidas.includes(categoria)) {
+    //   return res.status(400).send("Categoría no válida. Debe ser 'bebidas', 'comida' o 'cocktails'");
+    // }
 
     try {
-      // Transacción para obtener e incrementar el contador
+      // Obtener nuevo ID mediante contador por categoría
       const contadorRef = db.ref(`producto-venta-contador/${categoria}`);
-      const result = await contadorRef.transaction(current => {
-        return (current || 0) + 1;
-      });
+      const result = await contadorRef.transaction(current => (current || 0) + 1);
 
       if (!result.committed) {
         return res.status(500).send("Error al generar ID");
@@ -47,18 +57,24 @@ exports.agregarProductoVenta = onRequest((req, res) => {
       const productoRef = db.ref(`producto-venta/${categoria}/${nuevoId}`);
 
       const nuevoProducto = {
-        creadoEn: admin.database.ServerValue.TIMESTAMP,
+        // creadoEn: admin.database.ServerValue.TIMESTAMP,
         nombre,
-        descripcion,
         precio,
-        visible: visible !== undefined ? visible : false,
-        novedad: novedad !== undefined ? novedad : false,
-        tipo_producto
+        categoria,
+        visible: visible ?? true, // Por defecto visible es true
+        novedad: novedad ?? false,
       };
 
-      if (alergenos !== undefined) nuevoProducto.alergenos = alergenos;
-      if (intolerancias !== undefined) nuevoProducto.intolerancias = intolerancias;
-      if (anotaciones !== undefined) nuevoProducto.anotaciones = anotaciones;
+      // Opcionales
+      if (descripcion) nuevoProducto.descripcion = descripcion;
+      if (alergenos) nuevoProducto.alergenos = alergenos;
+      if (intolerancias) nuevoProducto.intolerancias = intolerancias;
+      if (anotaciones) nuevoProducto.anotaciones = anotaciones;
+      if (categoria === "comida" && tipo_comida) {
+        nuevoProducto.tipo_comida = tipo_comida;
+      } else {
+        nuevoProducto.tipo_comida = "uncategorized"; // Valor por defecto si no es comida
+      }
 
       await productoRef.set(nuevoProducto);
 
@@ -66,8 +82,9 @@ exports.agregarProductoVenta = onRequest((req, res) => {
         mensaje: `Producto agregado exitosamente a la categoría '${categoria}'`,
         id: nuevoId
       });
+
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error al agregar producto:", error);
       return res.status(500).send("Error interno del servidor");
     }
   });
@@ -114,23 +131,20 @@ exports.modificarProductoVenta = onRequest((req, res) => {
     }
 
     const {
-      id,           // ID del producto a modificar
-      categoria,    // ← necesario ahora
+      id,
       nombre,
       descripcion,
       precio,
       alergenos,
-      intolerancias,
       visible,
       novedad,
-      tipo_producto,
-      anadido_por,
-      fecha_anadido,
-      anotaciones
+      tipo_comida,
+      categoria,
+      anotaciones,
     } = req.body;
 
     if (!id || !categoria) {
-      return res.status(400).send("Faltan campos requeridos: id y categoria");
+      return res.status(400).send("Faltan campos requeridos: id y/o categoria");
     }
 
     try {
@@ -149,12 +163,11 @@ exports.modificarProductoVenta = onRequest((req, res) => {
       if (descripcion !== undefined) actualizaciones.descripcion = descripcion;
       if (precio !== undefined) actualizaciones.precio = parseFloat(precio);
       if (alergenos !== undefined) actualizaciones.alergenos = alergenos;
-      if (intolerancias !== undefined) actualizaciones.intolerancias = intolerancias;
       if (visible !== undefined) actualizaciones.visible = visible;
       if (novedad !== undefined) actualizaciones.novedad = novedad;
-      if (tipo_producto !== undefined) actualizaciones.tipo_producto = tipo_producto;
-      if (anadido_por !== undefined) actualizaciones.anadido_por = anadido_por;
-      if (fecha_anadido !== undefined) actualizaciones.fecha_anadido = fecha_anadido;
+      if (tipo_comida !== undefined && categoria === "comida") {
+        actualizaciones.tipo_comida = tipo_comida;
+      }
       if (anotaciones !== undefined) actualizaciones.anotaciones = anotaciones;
 
       await productoRef.update(actualizaciones);
@@ -166,6 +179,38 @@ exports.modificarProductoVenta = onRequest((req, res) => {
       });
     } catch (error) {
       console.error("Error al actualizar producto:", error);
+      return res.status(500).send("Error interno del servidor");
+    }
+  });
+});
+
+exports.eliminarProductoVenta = onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    if (req.method !== "POST") {
+      return res.status(405).send("Método no permitido");
+    }
+
+    const { id, categoria } = req.body;
+
+    if (!id || !categoria) {
+      return res.status(400).send("Faltan campos requeridos: id y/o categoria");
+    }
+
+    try {
+      const productoRef = db.ref(`producto-venta/${categoria}/${id}`);
+      const snapshot = await productoRef.once("value");
+
+      if (!snapshot.exists()) {
+        return res.status(404).send("El producto no existe en la categoría indicada");
+      }
+
+      await productoRef.remove();
+
+      return res.status(200).send({
+        mensaje: `Producto con ID '${id}' eliminado correctamente de la categoría '${categoria}'`
+      });
+    } catch (error) {
+      console.error("Error al eliminar producto:", error);
       return res.status(500).send("Error interno del servidor");
     }
   });

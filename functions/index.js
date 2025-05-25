@@ -8,20 +8,13 @@
  */
 
 const { onRequest } = require("firebase-functions/v2/https");
-// const admin = require("firebase-admin");
-
-// // Inicializa Firebase Admin solo una vez
-// if (!admin.apps.length) {
-//   admin.initializeApp({
-//     databaseURL: "https://proyecto-hosteleria-b6c98-default-rtdb.firebaseio.com/"
-//   });
-// }
 
 // Inyectar las funciones de cada módulo
 const { agregarEmpleado, listarEmpleados } = require("./funciones/empleados/empleados.js");
 const { guardarOModificarMesa, cerrarMesa } = require("./funciones/mesa/mesa.js");
 const { agregarPedidoProveedor } = require("./funciones/producto-proveedor/producto-proveedor.js");
-const { agregarProductoVenta, listarProductosVenta, modificarProductoVenta } = require("./funciones/producto-venta/producto-venta.js");
+const { agregarProductoVenta, listarProductosVenta, modificarProductoVenta, eliminarProductoVenta } = require("./funciones/producto-venta/producto-venta.js");
+const { agregarCategoriaProductoVenta, listarCategoriasProductoVenta } = require("./funciones/producto-venta/categorias.js");
 
 // Exportar las funciones a Firebase Functions
 
@@ -40,3 +33,8 @@ exports.agregarPedidoProveedor = onRequest(agregarPedidoProveedor);
 exports.agregarProductoVenta = onRequest(agregarProductoVenta);
 exports.listarProductosVenta = onRequest(listarProductosVenta);
 exports.modificarProductoVenta = onRequest(modificarProductoVenta);
+exports.eliminarProductoVenta = onRequest(eliminarProductoVenta);
+
+// Funciones de categorías de producto venta
+exports.agregarCategoriaProductoVenta = onRequest(agregarCategoriaProductoVenta);
+exports.listarCategoriasProductoVenta = onRequest(listarCategoriasProductoVenta);
