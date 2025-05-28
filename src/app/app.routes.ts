@@ -9,7 +9,7 @@ export const routes: Routes = [
         path: '', 
         component: LayoutComponent,
         children: [
-            {path: 'carta', component: CartaComponent},
+            { path: 'carta', component: CartaComponent },
             { path: 'mesa', component: MesaComponent },
             { path: '', redirectTo: 'carta', pathMatch: 'full' }
         ]

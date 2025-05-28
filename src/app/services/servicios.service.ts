@@ -16,7 +16,7 @@ import { Observable } from 'rxjs';
 export class ServiciosService {
   private http = inject(HttpClient);
 
-  constructor() {}
+  constructor() { }
 
   public listarProductosVenta$(): Observable<any[]> {
     return this.http.get<any[]>(
@@ -47,6 +47,21 @@ export class ServiciosService {
         categoria,
       }
     );
+  }
+
+  // URL del servicio para modificar un producto
+  private modificarProductoUrl = 'https://modificarproductoventa-rs2gjhs4iq-uc.a.run.app';
+  modificarProducto(producto: any) {
+    return this.http.post(this.modificarProductoUrl, producto);
+  }
+
+  // URL del servicio para eliminar un producto
+  eliminarProducto(producto: { id: string, categoria: string }) {
+    const url = 'https://eliminarproductoventa-rs2gjhs4iq-uc.a.run.app';
+    return this.http.post(url, {
+      id: producto.id,
+      categoria: producto.categoria
+    });
   }
 }
 
