@@ -36,7 +36,8 @@
         <p class="text-gray-600 text-sm mb-1 truncate">{{ producto.descripcion || 'Sin descripción.' }}</p>
         <p class="text-gray-900 font-bold text-lg">{{ producto.precio }}€</p>
 
-        <button (click)="verDetalles(producto)"
+        <!-- Botón con un If para que solo puedan verlos usuarios existentes y ron roles especificados -->
+        <button *ngIf="puedeEditar()" (click)="verDetalles(producto)"
           class="absolute bottom-4 right-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition">
           Ver más
         </button>
@@ -48,8 +49,10 @@
     <p class="text-center text-gray-500 mt-10">No hay productos disponibles.</p>
   </ng-template>
 
+  <p class="text-sm text-gray-500 mb-4">Rol actual: {{ userRole || 'Cargando rol...' }}</p>
+
   <!-- Modal editable con formulario -->
-  <div *ngIf="productoSeleccionado"
+  <div *ngIf="productoSeleccionado && puedeEditar()"
     class="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
     <form (ngSubmit)="guardarCambios()"
       class="bg-white/90 rounded-2xl shadow-xl p-6 max-w-lg w-full relative space-y-4">

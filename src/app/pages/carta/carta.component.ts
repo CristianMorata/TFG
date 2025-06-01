@@ -3,6 +3,9 @@ import { ServiciosService } from '../../services/servicios.service';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { Auth } from '@angular/fire/auth';
+import { AuthService } from '../../services/auth.service';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'carta',
@@ -10,12 +13,16 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './carta.component.html',
   styleUrl: './carta.component.css',
 })
-export class CartaComponent {
+export class CartaComponent implements OnInit {
   service = inject(ServiciosService);
   productos$: Observable<any>;
 
   productoSeleccionado: any = null;
   productoEditable: any = null;
+
+  auth = inject(Auth);
+  authService = inject(AuthService);
+  userRole: string | null = null;
 
   anadirProducto(producto: {
     nombre: string;
@@ -93,7 +100,22 @@ export class CartaComponent {
     });
   }
 
+  puedeEditar(): boolean {
+    return this.userRole === 'admin' || this.userRole === 'empleado';
+  }
+
   constructor() {
     this.productos$ = this.service.listarProductosVenta$();
+  }
+
+  ngOnInit(): void {
+    this.auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        this.userRole = await this.authService.getUserRole(user.uid);
+        console.log('ROL DEL USUARIO:', this.userRole);
+      } else {
+        console.warn('No hay usuario autenticado.');
+      }
+    });
   }
 }

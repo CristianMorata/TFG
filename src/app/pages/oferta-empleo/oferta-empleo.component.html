@@ -1,3 +1,40 @@
-<div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300">
+<div class="p-4 mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300">
   <h1 class="text-2xl font-bold mb-4">Trabaja con Nosotros!</h1>
 </div>
+
+<form class="space-y-4">
+  <!-- Email -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Email</label>
+    <input type="email" [(ngModel)]="email" name="email" required class="w-full border p-2 rounded" />
+  </div>
+
+  <!-- Contraseña -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+    <input type="password" [(ngModel)]="password" name="password" required class="w-full border p-2 rounded" />
+  </div>
+
+  <!-- Selector de rol solo visible para admins -->
+  <div *ngIf="puedeRegistrar()">
+    <label class="block text-sm font-medium text-gray-700">Rol</label>
+    <select [(ngModel)]="role" name="role" class="w-full border p-2 rounded">
+      <option value="usuario">Usuario</option>
+      <option value="empleado">Empleado</option>
+      <option value="admin">Administrador</option>
+    </select>
+  </div>
+
+  <!-- Botones -->
+  <div class="flex gap-4 justify-between pt-2">
+    <button (click)="iniciarSesion()" type="button"
+      class="w-1/2 bg-green-600 text-white p-2 rounded hover:bg-green-700">
+      Iniciar sesión
+    </button>
+
+    <button *ngIf="puedeRegistrar()" (click)="registrar()" type="button"
+      class="w-1/2 bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+      Registrarse
+    </button>
+  </div>
+</form>
