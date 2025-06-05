@@ -66,9 +66,11 @@ mesa {
 			anotaciones
 		}
 
-		DELETE - cerrarMesa - https://cerrarmesa-rs2gjhs4iq-uc.a.run.app {
+		PUSH - cerrarMesa - https://cerrarmesa-rs2gjhs4iq-uc.a.run.app {
 			mesaId
 		}
+
+		POST - listarMesa - https://listarmesa-rs2gjhs4iq-uc.a.run.app
 	}
 }
 
