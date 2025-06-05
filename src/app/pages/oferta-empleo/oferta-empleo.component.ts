@@ -44,6 +44,10 @@ export class OfertaEmpleoComponent implements OnInit {
     }
   }
 
+  logout() {
+    this.authService.logout().catch(err => console.error('Error al cerrar sesión:', err));
+  }
+
   ngOnInit(): void {
     this.auth.onAuthStateChanged(async (user) => {
       if (user) {

@@ -1,0 +1,38 @@
+<div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300">
+    <h1 class="text-2xl font-bold mb-4">Mesas</h1>
+</div>
+
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
+    <!-- Mostrar todas las mesas -->
+    <div *ngFor="let mesa of mesas" (click)="irAMesa(mesa)"
+        class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition border cursor-pointer">
+        <h2 class="text-lg font-semibold">{{ mesa.nombre }}</h2>
+        <p class="text-sm text-gray-500 mt-1">Estado: {{ mesa.estado }}</p>
+    </div>
+
+    <!-- Botón para añadir nueva mesa -->
+    <div (click)="abrirSelectorTipoMesa()"
+        class="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center rounded-xl p-4 border border-dashed">
+        <span class="text-center font-semibold">+ Añadir mesa</span>
+    </div>
+</div>
+
+<!-- Popup para seleccionar tipo de mesa -->
+<div *ngIf="mostrarPopupTipoMesa"
+    class="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md relative text-center">
+        <button (click)="cerrarPopupTipoMesa()"
+            class="absolute top-2 right-2 text-xl text-gray-400 hover:text-black">&times;</button>
+        <h2 class="text-xl font-bold mb-4">Selecciona el tipo de mesa</h2>
+        <div class="flex flex-col gap-4">
+            <button (click)="anadirMesaNormal()"
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                Añadir mesa normal
+            </button>
+            <button (click)="anadirMesaExtra()"
+                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                Añadir mesa extra
+            </button>
+        </div>
+    </div>
+</div>

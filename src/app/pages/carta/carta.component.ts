@@ -46,7 +46,7 @@ export class CartaComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         console.log('Producto añadido:', response);
-        // Aquí podrías actualizar la lista de productos si es necesario
+        
         this.productos$ = this.service.listarProductosVenta$();
       },
       error: (error) => {

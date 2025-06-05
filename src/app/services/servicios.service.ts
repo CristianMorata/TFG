@@ -63,23 +63,20 @@ export class ServiciosService {
       categoria: producto.categoria
     });
   }
+
+
+  // Funciones del objeto MESA
+  guardarOModificarMesa(data: {
+    mesaId: string,
+    contenido: any[],
+    estado: string,
+    anotaciones?: string
+  }) {
+    return this.http.post('https://guardaromodificarmesa-rs2gjhs4iq-uc.a.run.app', data);
+  }
+
+  cerrarMesa(mesaId: string) {
+    const url = 'https://cerrarmesa-rs2gjhs4iq-uc.a.run.app';
+    return this.http.post(url, { mesaId });
+  }
 }
-
-// public listarProductosVenta$(): Observable<Book[]>{
-//     return this.http.get<{libros: BookDTO[]}>('https://listarproductosventa-rs2gjhs4iq-uc.a.run.app').pipe(
-//       map(reponse => reponse.libros.map(book => new Book(book.clave, book.titulo))),
-//     );
-//   }
-
-// .map(productoVenta => new ProductoVenta(productoVenta.id, productoVenta.nombre, productoVenta.precio, productoVenta.descripcion))
-// public getDishesFromBooks$(bookId: string): Observable<Dish[]>{
-//   return this.http.get<{platos: DishDTO[]}>(`http://localhost:8080/controlador.php?operacion=obtener_platos&libro=${bookId}`).pipe(
-//     map(response => response.platos.map(dish => new Dish(dish.clave, dish.nombre, dish.foto))),
-//   )
-// }
-
-// public obtenerProductos$(): Observable<Productos[]>{
-//   return this.http.get("").pipe(
-//     map(dishesUnflatten => dishesUnflatten.flat()),
-//   )
-// }

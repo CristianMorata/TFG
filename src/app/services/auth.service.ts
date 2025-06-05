@@ -1,36 +1,32 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, User } from '@angular/fire/auth';
 import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private userSubject = new BehaviorSubject<User | null>(null);
+  user$ = this.userSubject.asObservable();
 
-  constructor(private auth: Auth, private firestore: Firestore) { }
+  constructor(private auth: Auth, private firestore: Firestore) {
+    // Escucha cambios de sesión
+    onAuthStateChanged(this.auth, user => {
+      this.userSubject.next(user);
+    });
+  }
 
-  // Método para registrar un nuevo usuario
-  register({
-    email,
-    password,
-    role
-  }: {
-    email: string;
-    password: string;
-    role: string;
-  }) {
+  register({ email, password, role }: { email: string; password: string; role: string; }) {
     return createUserWithEmailAndPassword(this.auth, email, password)
       .then(async userCredential => {
         const user = userCredential.user;
-
-        // Guarda el rol en Firestore
         const userRef = doc(this.firestore, `users/${user.uid}`);
         await setDoc(userRef, {
           email: user.email,
           role: role,
           createdAt: new Date()
         });
-
         return user;
       })
       .catch(error => {
@@ -41,13 +37,15 @@ export class AuthService {
 
   login(email: string, password: string) {
     return signInWithEmailAndPassword(this.auth, email, password)
-      .then(userCredential => {
-        return userCredential.user;
-      })
+      .then(userCredential => userCredential.user)
       .catch(error => {
         console.error('Error al iniciar sesión:', error);
         throw error;
       });
+  }
+
+  logout() {
+    return signOut(this.auth);
   }
 
   getUserRole(uid: string): Promise<string | null> {
