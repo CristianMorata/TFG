@@ -85,3 +85,34 @@ exports.cerrarMesa = onRequest((req, res) => {
         }
     });
 });
+
+exports.listarMesa = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        if (req.method !== "GET") {
+            return res.status(405).send("Método no permitido");
+        }
+
+        const mesaId = req.query.mesaId;
+
+        if (!mesaId) {
+            return res.status(400).send("Falta el parámetro mesaId");
+        }
+
+        try {
+            const mesaRef = db.ref(`mesa/${mesaId}`);
+            const snapshot = await mesaRef.once("value");
+
+            if (!snapshot.exists()) {
+                return res.status(404).send("La mesa no existe");
+            }
+
+            return res.status(200).json({
+                id: mesaId,
+                datos: snapshot.val()
+            });
+        } catch (error) {
+            console.error("Error al listar la mesa:", error);
+            return res.status(500).send("Error interno del servidor");
+        }
+    });
+});

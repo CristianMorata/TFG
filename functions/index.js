@@ -11,7 +11,7 @@ const { onRequest } = require("firebase-functions/v2/https");
 
 // Inyectar las funciones de cada módulo
 const { agregarEmpleado, listarEmpleados, modificarEmpleado, eliminarEmpleado } = require("./funciones/empleados/empleados.js");
-const { guardarOModificarMesa, cerrarMesa } = require("./funciones/mesa/mesa.js");
+const { guardarOModificarMesa, cerrarMesa, listarMesa } = require("./funciones/mesa/mesa.js");
 const { agregarPedidoProveedor } = require("./funciones/producto-proveedor/pedido-proveedor.js");
 const { agregarProductoVenta, listarProductosVenta, modificarProductoVenta, eliminarProductoVenta } = require("./funciones/producto-venta/producto-venta.js");
 const { agregarCategoriaProductoVenta, listarCategoriasProductoVenta } = require("./funciones/producto-venta/categorias.js");
@@ -27,6 +27,7 @@ exports.eliminarEmpleado = onRequest(eliminarEmpleado);
 // Funciones de mesa
 exports.guardarOModificarMesa = onRequest(guardarOModificarMesa);
 exports.cerrarMesa = onRequest(cerrarMesa);
+exports.listarMesa = onRequest(listarMesa);
 
 // Funciones de producto proveedor
 exports.agregarPedidoProveedor = onRequest(agregarPedidoProveedor);

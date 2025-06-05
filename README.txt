@@ -25,5 +25,6 @@ Problemas solucionados:
         - Edición de index.js y package,json en /functions e inclusión del script 'lint'
         - Borrado de package-lock y node_modules y reinstalación de estos con parçametros correctos
 
+Deploy de funciones de backend a Firebase Functions
 
 Created by Cristian Morata.

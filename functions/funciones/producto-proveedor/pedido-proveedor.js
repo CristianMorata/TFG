@@ -9,7 +9,7 @@ exports.agregarPedidoProveedor = onRequest((req, res) => {
         }
 
         const {
-            pproducto,
+            producto,
             cantidad,
             proveedor,
             presupuesto,
