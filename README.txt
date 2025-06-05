@@ -70,7 +70,9 @@ mesa {
 			mesaId
 		}
 
-		POST - listarMesa - https://listarmesa-rs2gjhs4iq-uc.a.run.app
+		POST - listarMesa - https://listarmesa-rs2gjhs4iq-uc.a.run.app {
+			mesaId
+		}
 	}
 }
 
