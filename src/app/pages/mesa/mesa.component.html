@@ -30,7 +30,7 @@
 
 <!-- Botón editar / guardar cambios -->
 <div class="mt-4 flex gap-2">
-  <button *ngIf="mesaExiste && !modoEdicion" (click)="modoEdicion = true"
+  <button *ngIf="mesaExiste && !modoEdicion" (click)="activarModoEdicion()"
     class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
     Editar mesa
   </button>
@@ -38,6 +38,11 @@
   <button *ngIf="modoEdicion" (click)="guardarCambiosMesaEditada()"
     class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
     Guardar cambios
+  </button>
+
+  <button *ngIf="modoEdicion" (click)="deshacerCambios()"
+    class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
+    Deshacer cambios
   </button>
 </div>
 
@@ -114,7 +119,10 @@
     <button (click)="cerrarPopupEditarProducto()"
       class="absolute top-2 right-2 text-xl text-gray-400 hover:text-black">&times;</button>
 
-    <h2 class="text-xl font-bold mb-4">Editar producto</h2>
+    <button *ngIf="mesaExiste && !modoEdicion" (click)="activarModoEdicion()"
+      class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+      Editar mesa
+    </button>
 
     <label class="block mb-2 text-sm">Nombre</label>
     <input [(ngModel)]="productoEditando.nombre" class="w-full border rounded p-2 mb-4" />

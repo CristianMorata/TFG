@@ -38,6 +38,7 @@ export class MesaComponent {
   mostrarPopupEditarProducto: boolean = false;
   indiceProductoEditando: number | null = null;
 
+  mesaContenidoBackup: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -181,7 +182,7 @@ export class MesaComponent {
     const datos = {
       mesaId: this.mesaId,
       contenido: this.mesaContenidoExistente,
-      estado: 'sirviendo',
+      estado: 'Sirviendo',
       anotaciones: this.anotaciones
     };
 
@@ -199,5 +200,17 @@ export class MesaComponent {
         alert('Error al guardar cambios');
         console.error(err);
       });
+  }
+
+  activarModoEdicion() {
+    this.modoEdicion = true;
+    this.mesaContenidoBackup = JSON.parse(JSON.stringify(this.mesaContenidoExistente));
+  }
+
+  deshacerCambios() {
+    this.mesaContenidoExistente = JSON.parse(JSON.stringify(this.mesaContenidoBackup)); // recuperamos copia
+    this.mesaContenidoExistente = [...this.mesaContenidoExistente]; // forzamos render de Angular
+    this.modoEdicion = false;
+    this.mesaContenidoBackup = [];
   }
 }
