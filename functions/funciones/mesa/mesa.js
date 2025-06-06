@@ -144,3 +144,26 @@ exports.actualizarContadorMesas = onRequest((req, res) => {
         }
     });
 });
+
+exports.listarMesasExtra = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        try {
+            const snapshot = await db.ref('mesa').once('value');
+            const data = snapshot.val() || {};
+
+            const mesasExtra = Object.entries(data)
+                .filter(([key]) => key.startsWith('ex'))
+                .map(([id, valor]) => ({
+                    id,
+                    nombre: `Mesa Extra (${id.replace('ex', '')})`,
+                    estado: valor.estado || 'Desconocido',
+                    extra: true
+                }));
+
+            res.status(200).json({ mesasExtra });
+        } catch (error) {
+            console.error('Error al listar mesas extra:', error);
+            res.status(500).send('Error interno');
+        }
+    });
+});
