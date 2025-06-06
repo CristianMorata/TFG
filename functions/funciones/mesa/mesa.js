@@ -116,3 +116,31 @@ exports.listarMesa = onRequest((req, res) => {
         }
     });
 });
+
+exports.obtenerContadorMesas = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        try {
+            const snapshot = await db.ref('configuracion/contadorMesas').once('value');
+            const contador = snapshot.val() || 0;
+            res.status(200).json({ contador });
+        } catch (e) {
+            res.status(500).send("Error al obtener contador");
+        }
+    });
+});
+
+exports.actualizarContadorMesas = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        const { nuevoValor } = req.body;
+        if (typeof nuevoValor !== 'number') {
+            return res.status(400).send("Valor inválido");
+        }
+
+        try {
+            await db.ref('configuracion/contadorMesas').set(nuevoValor);
+            res.status(200).json({ mensaje: "Contador actualizado", valor: nuevoValor });
+        } catch (e) {
+            res.status(500).send("Error al actualizar contador");
+        }
+    });
+});
