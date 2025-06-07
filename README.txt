@@ -73,6 +73,18 @@ mesa {
 		POST - listarMesa - https://listarmesa-rs2gjhs4iq-uc.a.run.app {
 			mesaId
 		}
+
+		POST - listarTodasLasMesas - https://listartodaslasmesas-rs2gjhs4iq-uc.a.run.app
+
+		POST - obtenerContadorMesas - https://obtenercontadormesas-rs2gjhs4iq-uc.a.run.app
+
+		POST - actualizarContadorMesas - https://actualizarcontadormesas-rs2gjhs4iq-uc.a.run.app {
+			nuevoValor
+		}
+
+		POST - listarTodasLasMesas - https://listartodaslasmesas-rs2gjhs4iq-uc.a.run.app
+
+		POST - listarMesasExtra - https://listarmesasextra-rs2gjhs4iq-uc.a.run.app
 	}
 }
 
