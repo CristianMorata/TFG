@@ -96,6 +96,7 @@ export class MesaComponent {
       nombre: producto.nombre,
       precio: producto.precio,
       anadidoPor: this.usuario?.email || 'desconocido',
+      estado: 'En preparación',
       hora: horaActual,
       anotacion: anotacion
     };
@@ -113,7 +114,7 @@ export class MesaComponent {
     const datos = {
       mesaId: this.mesaId,
       contenido: contenidoFinal,
-      estado: 'sirviendo',
+      estado: 'En preparación',
       anotaciones: this.anotaciones
     };
 
@@ -128,9 +129,9 @@ export class MesaComponent {
         alert('Mesa guardada correctamente');
 
         // Actualizar interfaz
-        this.mesaContenidoExistente = [...contenidoFinal]; // actualiza la mesa existente
-        this.productosSeleccionados = []; // limpiamos productos sin guardar
-        this.mesaContenido = []; // limpiamos productos nuevos
+        this.mesaContenidoExistente = [...contenidoFinal];
+        this.productosSeleccionados = [];
+        this.mesaContenido = [];
         this.mostrarPopupProductos = false;
         this.mesaExiste = true;
       })

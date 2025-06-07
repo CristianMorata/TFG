@@ -2,19 +2,22 @@
     <h1 class="text-2xl font-bold mb-4">Mesas</h1>
 </div>
 
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
-    <!-- Mostrar todas las mesas -->
+<div *ngIf="!cargando" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
     <div *ngFor="let mesa of mesas" (click)="irAMesa(mesa)"
         class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition border cursor-pointer">
         <h2 class="text-lg font-semibold">{{ mesa.nombre }}</h2>
         <p class="text-sm text-gray-500 mt-1">Estado: {{ mesa.estado }}</p>
     </div>
 
-    <!-- Botón para añadir nueva mesa -->
     <div (click)="abrirSelectorTipoMesa()"
         class="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center rounded-xl p-4 border border-dashed">
         <span class="text-center font-semibold">+ Añadir mesa</span>
     </div>
+</div>
+
+<!-- Puedes mostrar un spinner mientras carga -->
+<div *ngIf="cargando" class="p-8 text-center text-gray-500">
+    Cargando mesas...
 </div>
 
 <!-- Popup para seleccionar tipo de mesa -->

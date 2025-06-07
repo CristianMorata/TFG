@@ -13,6 +13,7 @@
   <ul class="list-disc list-inside text-gray-700">
     <li *ngFor="let p of mesaContenidoExistente; let i = index">
       {{ p.nombre }} - {{ p.precio | currency }} (añadido por {{ p.anadidoPor }} a las {{ p.hora }})
+      <div *ngIf="p.estado" class="text-sm italic text-orange-500">Estado: {{ p.estado }}</div>
       <div *ngIf="p.anotacion" class="text-sm italic text-gray-500">Anotación: {{ p.anotacion }}</div>
 
       <div *ngIf="modoEdicion" class="mt-1 flex gap-2">

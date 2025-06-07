@@ -13,8 +13,8 @@ import { Router } from '@angular/router';
 })
 export class MesasComponent implements OnInit {
   mesas: any[] = [];
-  mesasFijas: any[] = []; // NUEVO
-  mesasExtras: any[] = []; // NUEVO
+  mesasFijas: any[] = [];
+  mesasExtras: any[] = [];
 
   extraCount = 1;
   mesaCount = 0;
@@ -22,6 +22,8 @@ export class MesasComponent implements OnInit {
 
   usuario: User | null = null;
   tipoUsuario: string | null = null;
+
+  cargando = true;
 
   constructor(private authService: AuthService, private router: Router) {
     // Obtenemos el usuario y su tipo
@@ -36,8 +38,18 @@ export class MesasComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.obtenerContadorMesas();
-    this.cargarMesasExtra();
+    this.inicializarMesas();
+  }
+
+  async inicializarMesas() {
+    try {
+      await this.obtenerContadorMesas();
+      await this.cargarMesasExtra();
+      await this.actualizarEstadosMesas();
+    } finally {
+      this.actualizarListaMesas();
+      this.cargando = false;
+    }
   }
 
   abrirSelectorTipoMesa() {
@@ -53,11 +65,11 @@ export class MesasComponent implements OnInit {
   }
 
   actualizarListaMesas() {
-    this.mesas = [...this.mesasFijas, ...this.mesasExtras]; // NUEVO
+    this.mesas = [...this.mesasFijas, ...this.mesasExtras];
   }
 
-  obtenerContadorMesas() {
-    fetch('https://obtenercontadormesas-rs2gjhs4iq-uc.a.run.app')
+  obtenerContadorMesas(): Promise<void> {
+    return fetch('https://obtenercontadormesas-rs2gjhs4iq-uc.a.run.app')
       .then(res => res.json())
       .then(data => {
         this.mesaCount = data.contador;
@@ -68,21 +80,16 @@ export class MesasComponent implements OnInit {
           estado: 'Libre',
           extra: false
         }));
-
-        this.actualizarListaMesas(); // NUEVO
       });
   }
 
-  cargarMesasExtra() {
-    fetch('https://listarmesasextra-rs2gjhs4iq-uc.a.run.app')
+  cargarMesasExtra(): Promise<void> {
+    return fetch('https://listarmesasextra-rs2gjhs4iq-uc.a.run.app')
       .then(res => res.json())
       .then(data => {
         if (!data || !data.mesasExtra) return;
-
         this.mesasExtras = data.mesasExtra;
-        this.actualizarListaMesas(); // NUEVO
-      })
-      .catch(err => console.error('Error al cargar mesas extra:', err));
+      });
   }
 
   anadirMesaNormal() {
@@ -93,7 +100,7 @@ export class MesasComponent implements OnInit {
       estado: 'Libre',
       extra: false
     });
-    this.actualizarListaMesas(); // NUEVO
+    this.actualizarListaMesas();
 
     fetch('https://actualizarcontadormesas-rs2gjhs4iq-uc.a.run.app', {
       method: 'POST',
@@ -114,9 +121,27 @@ export class MesasComponent implements OnInit {
 
     this.mesasExtras.push(nuevaMesaExtra);
     this.extraCount++;
-    this.actualizarListaMesas(); // NUEVO
+    this.actualizarListaMesas();
 
     this.cerrarPopupTipoMesa();
+  }
+
+  actualizarEstadosMesas(): Promise<void> {
+    return fetch('https://listartodaslasmesas-rs2gjhs4iq-uc.a.run.app')
+      .then(res => res.json())
+      .then(data => {
+        const todasMesas = data.datos || {};
+
+        this.mesasFijas.forEach(m => {
+          const mesaEnFirebase = todasMesas[m.id];
+          m.estado = mesaEnFirebase?.estado || 'Libre';
+        });
+
+        this.mesasExtras.forEach(m => {
+          const mesaEnFirebase = todasMesas[m.id];
+          m.estado = mesaEnFirebase?.estado || 'Libre';
+        });
+      });
   }
 
   irAMesa(mesa: any) {
