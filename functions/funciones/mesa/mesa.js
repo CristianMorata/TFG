@@ -24,7 +24,6 @@ exports.guardarOModificarMesa = onRequest((req, res) => {
             // Construir nuevo objeto mesa fusionando lo anterior y lo nuevo
             const nuevaMesa = {
                 ...mesaActual,
-                actualizadoEn: admin.database.ServerValue.TIMESTAMP
             };
 
             if (contenido !== undefined) nuevaMesa.contenido = contenido;
@@ -113,6 +112,19 @@ exports.listarMesa = onRequest((req, res) => {
         } catch (error) {
             console.error("Error al listar la mesa:", error);
             return res.status(500).send("Error interno del servidor");
+        }
+    });
+});
+
+exports.listarTodasLasMesas = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        try {
+            const snapshot = await db.ref('mesa').once('value');
+            const data = snapshot.val() || {};
+            res.status(200).json({ datos: data });
+        } catch (error) {
+            console.error('Error al listar todas las mesas:', error);
+            res.status(500).send('Error interno del servidor');
         }
     });
 });
