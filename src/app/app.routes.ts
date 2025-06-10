@@ -7,6 +7,7 @@ import { MesaComponent } from './pages/mesa/mesa.component';
 import { OfertaEmpleoComponent } from './pages/oferta-empleo/oferta-empleo.component';
 import { BarraComponent } from './pages/barra/barra.component';
 import { CocinaComponent } from './pages/cocina/cocina.component';
+import { ConfiguracionComponent } from './pages/configuracion/configuracion.component';
 
 export const routes: Routes = [
     {
@@ -18,6 +19,7 @@ export const routes: Routes = [
             { path: 'barra', component: BarraComponent },
             { path: 'cocina', component: CocinaComponent },
             { path: 'oferta-empleo', component: OfertaEmpleoComponent },
+            { path: 'configuracion', component: ConfiguracionComponent },
             { path: '', redirectTo: 'carta', pathMatch: 'full' },
             { path: 'mesa/:id', component: MesaComponent },
         ]

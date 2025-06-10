@@ -39,5 +39,12 @@
       <lucide-icon name="my-icon" [img]="login" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Iniciar Sesión</span>
     </a>
+    
+    <!-- Redireccion a configuracion -->
+    <a routerLink="/configuracion" routerLinkActive="bg-gray-700"
+       class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
+      <lucide-icon name="my-icon" [img]="settings" class="w-5 h-5"></lucide-icon>
+      <span *ngIf="!isCollapsed">Configuración</span>
+    </a>
   </nav>
 </div>

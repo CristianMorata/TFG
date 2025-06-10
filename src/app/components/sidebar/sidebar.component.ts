@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LucideAngularModule, BookText, Utensils, LogIn, CookingPot, Wine } from 'lucide-angular';
+import { LucideAngularModule, BookText, Utensils, LogIn, CookingPot, Wine, Settings } from 'lucide-angular';
 
 @Component({
   selector: 'sidebar',
@@ -21,6 +21,7 @@ export class SidebarComponent {
   readonly login = LogIn;
   readonly cocina = CookingPot;
   readonly cafe = Wine;
+  readonly settings = Settings;
   // readonly FileIcon = FileIcon;
 
   toggleSidebar() {
