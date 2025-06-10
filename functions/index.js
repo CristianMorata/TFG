@@ -15,6 +15,7 @@ const { guardarOModificarMesa, cerrarMesa, listarMesa, obtenerContadorMesas, act
 const { agregarPedidoProveedor } = require("./funciones/producto-proveedor/pedido-proveedor.js");
 const { agregarProductoVenta, listarProductosVenta, modificarProductoVenta, eliminarProductoVenta } = require("./funciones/producto-venta/producto-venta.js");
 const { agregarCategoriaProductoVenta, listarCategoriasProductoVenta } = require("./funciones/producto-venta/categorias.js");
+const { actualizarConfiguracion, obtenerConfiguracion } = require("./funciones/configuracion/configuracion.js");
 
 // Exportar las funciones a Firebase Functions
 
@@ -45,3 +46,7 @@ exports.eliminarProductoVenta = onRequest(eliminarProductoVenta);
 // Funciones de categorías de producto venta
 exports.agregarCategoriaProductoVenta = onRequest(agregarCategoriaProductoVenta);
 exports.listarCategoriasProductoVenta = onRequest(listarCategoriasProductoVenta);
+
+// Funciones de configuración
+exports.actualizarConfiguracion = onRequest(actualizarConfiguracion);
+exports.obtenerConfiguracion = onRequest(obtenerConfiguracion);
