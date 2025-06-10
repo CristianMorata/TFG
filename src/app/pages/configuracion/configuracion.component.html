@@ -1,1 +1,14 @@
-<p>configuracion works!</p>
+<div *ngIf="cargando">Cargando configuración...</div>
+<div *ngIf="error" style="color: red;">{{ error }}</div>
+
+<div *ngIf="!cargando && !error">
+    <label>
+        <input type="checkbox" [(ngModel)]="servicioCamarero" (change)="onChange()" />
+        Servicio camarero
+    </label>
+    <br />
+    <label>
+        <input type="checkbox" [(ngModel)]="servicioCliente" (change)="onChange()" />
+        Servicio cliente
+    </label>
+</div>
