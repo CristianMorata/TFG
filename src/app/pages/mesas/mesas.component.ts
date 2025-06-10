@@ -89,6 +89,7 @@ export class MesasComponent implements OnInit {
       .then(data => {
         if (!data || !data.mesasExtra) return;
         this.mesasExtras = data.mesasExtra;
+        this.extraCount = this.mesasExtras.length + 1;
       });
   }
 

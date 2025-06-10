@@ -1,67 +1,73 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, User } from '@angular/fire/auth';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User
+} from '@angular/fire/auth';
 import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private userSubject = new BehaviorSubject<User | null>(null);
   user$ = this.userSubject.asObservable();
 
   constructor(private auth: Auth, private firestore: Firestore) {
-    // Escucha cambios de sesión
+    // Suscribimos el BehaviorSubject al estado de Auth
     onAuthStateChanged(this.auth, user => {
       this.userSubject.next(user);
     });
   }
 
-  register({ email, password, role }: { email: string; password: string; role: string; }) {
-    return createUserWithEmailAndPassword(this.auth, email, password)
-      .then(async userCredential => {
-        const user = userCredential.user;
-        const userRef = doc(this.firestore, `users/${user.uid}`);
-        await setDoc(userRef, {
-          email: user.email,
-          role: role,
-          createdAt: new Date()
-        });
-        return user;
-      })
-      .catch(error => {
-        console.error('Error al registrar el usuario:', error);
-        throw error;
+  async register({ email, password, role }: { email: string; password: string; role: string }) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+      const user = userCredential.user;
+      console.log('✅ Usuario creado en Auth con UID:', user.uid);
+
+      // Guardamos también en Firestore bajo la colección "users"
+      const userRef = doc(this.firestore, 'users', user.uid);
+      await setDoc(userRef, {
+        email,
+        role,
+        createdAt: new Date()
       });
+      console.log('✅ Documento de usuario creado en Firestore con rol:', role);
+
+      return user;
+    } catch (err) {
+      console.error('❌ Error en register():', err);
+      throw err;
+    }
   }
 
-  login(email: string, password: string) {
-    return signInWithEmailAndPassword(this.auth, email, password)
-      .then(userCredential => userCredential.user)
-      .catch(error => {
-        console.error('Error al iniciar sesión:', error);
-        throw error;
-      });
+  async login(email: string, password: string) {
+    try {
+      const cred = await signInWithEmailAndPassword(this.auth, email, password);
+      return cred.user;
+    } catch (err) {
+      console.error('❌ Error en login():', err);
+      throw err;
+    }
   }
 
-  logout() {
-    return signOut(this.auth);
+  async logout() {
+    return await signOut(this.auth);
   }
 
-  getUserRole(uid: string): Promise<string | null> {
-    const userRef = doc(this.firestore, `users/${uid}`);
-    return getDoc(userRef)
-      .then(docSnap => {
-        if (docSnap.exists()) {
-          const data = docSnap.data() as any;
-          return data.role;
-        } else {
-          return null;
-        }
-      })
-      .catch(error => {
-        console.error('Error obteniendo el rol del usuario:', error);
-        return null;
-      });
+  async getUserRole(uid: string): Promise<string | null> {
+    try {
+      const snap = await getDoc(doc(this.firestore, 'users', uid));
+      if (snap.exists()) {
+        return (snap.data() as any).role;
+      }
+      return null;
+    } catch (err) {
+      console.error('❌ Error en getUserRole():', err);
+      return null;
+    }
   }
 }

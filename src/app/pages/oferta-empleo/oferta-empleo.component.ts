@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
+import { onAuthStateChanged } from '@angular/fire/auth';
 
 @Component({
   selector: 'oferta-empleo',
@@ -12,9 +13,9 @@ import { Auth } from '@angular/fire/auth';
   styleUrl: './oferta-empleo.component.css'
 })
 export class OfertaEmpleoComponent implements OnInit {
-  email: string = '';
-  password: string = '';
-  role: string = 'usuario'; // valor por defecto
+  email = '';
+  password = '';
+  role = 'usuario';
   error: string | null = null;
 
   auth = inject(Auth);
@@ -29,33 +30,43 @@ export class OfertaEmpleoComponent implements OnInit {
         password: this.password,
         role: this.role
       });
-      this.router.navigate(['/']); // redirigir después del registro
-    } catch (error: any) {
-      this.error = error.message || 'Error al registrar.';
+      this.router.navigate(['/']);
+    } catch (err: any) {
+      console.error('❌ Registro error:', err);
+      this.error = err.message ?? 'Error al registrar.';
     }
   }
 
   async iniciarSesion() {
     try {
       await this.authService.login(this.email, this.password);
-      this.router.navigate(['/']); // redirigir al inicio o a dashboard
-    } catch (error: any) {
-      this.error = error.message || 'Error al iniciar sesión.';
+      this.router.navigate(['/']);
+    } catch (err: any) {
+      this.error = err.message ?? 'Error al iniciar sesión.';
     }
   }
 
   logout() {
-    this.authService.logout().catch(err => console.error('Error al cerrar sesión:', err));
+    this.authService.logout().catch(err => console.error('❌ Logout error:', err));
   }
 
   ngOnInit(): void {
-    this.auth.onAuthStateChanged(async (user) => {
+    // Opción A: con onAuthStateChanged
+    onAuthStateChanged(this.auth, async user => {
       if (user) {
         this.userRole = await this.authService.getUserRole(user.uid);
       } else {
         this.userRole = null;
       }
     });
+
+    // ———— o ————
+    // Opción B: suscripción al observable user$
+    /*
+    this.authService.user$.subscribe(async user => {
+      this.userRole = user ? await this.authService.getUserRole(user.uid) : null;
+    });
+    */
   }
 
   puedeRegistrar(): boolean {
