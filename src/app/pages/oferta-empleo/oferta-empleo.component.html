@@ -16,7 +16,7 @@
   </div>
 
   <!-- Selector de rol solo visible para admins -->
-  <div>
+  <div *ngIf="puedeRegistrar()">
     <label class="block text-sm font-medium text-gray-700">Rol</label>
     <select [(ngModel)]="role" name="role" class="w-full border p-2 rounded">
       <option value="usuario">Usuario</option>
@@ -32,18 +32,14 @@
       Iniciar sesión
     </button>
 
-    <button (click)="logout()"
+    <button *ngIf="estaRegistrado()" (click)="logout()"
       class="w-1/3 bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded transition">
       Cerrar sesión
     </button>
 
-    <button (click)="registrar()" type="button"
+    <button *ngIf="puedeRegistrar()" (click)="registrar()" type="button"
       class="w-1/3 bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
       Registrarse
     </button>
-    <!-- <button *ngIf="puedeRegistrar()" (click)="registrar()" type="button"
-      class="w-1/3 bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-      Registrarse
-    </button> -->
   </div>
 </form>

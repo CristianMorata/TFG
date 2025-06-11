@@ -4,7 +4,6 @@ import { AuthService } from '../../services/auth.service';
 import { User } from 'firebase/auth';
 import { CommonModule } from '@angular/common';
 import { ServiciosService } from '../../services/servicios.service';
-import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -31,7 +30,7 @@ export class MesaComponent {
   mesaExiste: boolean = false;
 
   mostrarPopupProductos = false;
-  todosLosProductos: any[] = []; // <-- Array local de productos para no cargar desde el backend cada vez
+  todosLosProductos: any[] = [];
 
   modoEdicion: boolean = false;
   productoEditando: any = null;

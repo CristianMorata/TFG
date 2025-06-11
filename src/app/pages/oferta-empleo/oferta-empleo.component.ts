@@ -59,17 +59,13 @@ export class OfertaEmpleoComponent implements OnInit {
         this.userRole = null;
       }
     });
-
-    // ———— o ————
-    // Opción B: suscripción al observable user$
-    /*
-    this.authService.user$.subscribe(async user => {
-      this.userRole = user ? await this.authService.getUserRole(user.uid) : null;
-    });
-    */
   }
 
   puedeRegistrar(): boolean {
     return this.userRole === 'admin';
+  }
+
+  estaRegistrado(): boolean {
+    return this.userRole === 'admin' || this.userRole === 'empleado' || this.userRole === 'usuario';
   }
 }

@@ -31,7 +31,7 @@
 
 <!-- Botón editar / guardar cambios -->
 <div class="mt-4 flex gap-2">
-  <button *ngIf="mesaExiste && !modoEdicion" (click)="activarModoEdicion()"
+  <button *ngIf="mesaExiste && modoEdicion" (click)="activarModoEdicion()"
     class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
     Editar mesa
   </button>

@@ -13,21 +13,21 @@
     </a>
 
     <!-- Redireccion a mesa -->
-    <a routerLink="/mesas" routerLinkActive="bg-gray-700"
+    <a *ngIf="esEmpleadoOAdmin()" routerLink="/mesas" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="utensils" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Mesas</span>
     </a>
     
     <!-- Redireccion a barra -->
-    <a routerLink="/barra" routerLinkActive="bg-gray-700"
+    <a *ngIf="esEmpleadoOAdmin()" routerLink="/barra" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="cafe" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Barra</span>
     </a>
     
     <!-- Redireccion a cocina -->
-    <a routerLink="/cocina" routerLinkActive="bg-gray-700"
+    <a *ngIf="esEmpleadoOAdmin()" routerLink="/cocina" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="cocina" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Cocina</span>
@@ -41,7 +41,7 @@
     </a>
     
     <!-- Redireccion a configuracion -->
-    <a routerLink="/configuracion" routerLinkActive="bg-gray-700"
+    <a *ngIf="esAdmin()" routerLink="/configuracion" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="settings" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Configuración</span>
