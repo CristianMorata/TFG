@@ -1,1 +1,26 @@
-<p>barra works!</p>
+<ng-container *ngFor="let mesa of mesasConBebidas">
+  <section class="mb-6 p-4 border border-gray-300 rounded-lg bg-white shadow-sm">
+    <h3 class="text-xl font-semibold mb-3">Mesa #{{ mesa.mesaId }}</h3>
+    <ul>
+      <li
+        *ngFor="let bebida of mesa.bebidas; let i = index"
+        class="flex justify-between items-center py-2 border-b last:border-b-0"
+      >
+        <span class="text-gray-800">
+          {{ bebida.nombre }} ({{ bebida.hora }})
+        </span>
+        <button
+          (click)="marcarComoServido(mesa.mesaId, bebida.originalIndex)"
+          class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-green-300"
+          [attr.aria-label]="'Marcar ' + bebida.nombre + ' como servido'"
+        >
+          Servido
+        </button>
+      </li>
+    </ul>
+  </section>
+</ng-container>
+
+<div *ngIf="!cargando && !error && mesasConBebidas.length === 0" class="text-center py-4">
+  No hay bebidas pendientes.
+</div>

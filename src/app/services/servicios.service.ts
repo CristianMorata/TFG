@@ -79,4 +79,17 @@ export class ServiciosService {
     const url = 'https://cerrarmesa-rs2gjhs4iq-uc.a.run.app';
     return this.http.post(url, { mesaId });
   }
+
+  // Funciones del objeto MESA
+  listarTodos(): Observable<any> {
+    return this.http.get<any>(`https://listartodaslasmesas-rs2gjhs4iq-uc.a.run.app`);
+  }
+
+  // 2. Marcar uno como servido (suponiendo un PATCH o PUT)
+  marcarServido(productoId: number): Observable<any> {
+    return this.http.patch(
+      `https://listartodaslasmesas-rs2gjhs4iq-uc.a.run.app/productos/${productoId}`,
+      { estado: 'servido' }
+    );
+  }
 }

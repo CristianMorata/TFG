@@ -93,6 +93,7 @@ export class MesaComponent {
 
     const productoFinal = {
       nombre: producto.nombre,
+      categoria: producto.categoria,
       precio: producto.precio,
       anadidoPor: this.usuario?.email || 'desconocido',
       estado: 'En preparación',
