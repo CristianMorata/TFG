@@ -1,11 +1,112 @@
-import { Component } from '@angular/core';
+// cocina.component.ts
+import { Component, OnInit } from '@angular/core';
+import { ServiciosService } from '../../services/servicios.service';
+import { CommonModule } from '@angular/common';
+
+interface Producto {
+  nombre: string;
+  precio: number;
+  estado: string;
+  categoria?: string;
+  tipoProducto?: string;
+  anotacion?: string;
+  hora: string;
+  anadidoPor?: string;
+}
+
+interface MesaRaw {
+  actualizadoEn: number;
+  anotaciones: string;
+  contenido: Producto[];
+  estado: string;
+}
+
+interface ItemConIndex extends Producto {
+  originalIndex: number;
+}
+
+interface MesaConComida {
+  mesaId: string;
+  platos: ItemConIndex[];
+}
 
 @Component({
   selector: 'cocina',
-  imports: [],
+  standalone: true,
+  imports: [ CommonModule],
   templateUrl: './cocina.component.html',
-  styleUrl: './cocina.component.css'
+  styleUrls: ['./cocina.component.css']
 })
-export class CocinaComponent {
+export class CocinaComponent implements OnInit {
+  rawMesasData: Record<string, MesaRaw> = {};
+  mesasConComida: MesaConComida[] = [];
+  cargando = false;
+  error: string | null = null;
 
+  constructor(private servicios: ServiciosService) {}
+
+  ngOnInit(): void {
+    this.recargar();
+  }
+
+  private recargar(): void {
+    this.cargando = true;
+    this.error = null;
+
+    this.servicios.listarTodos().subscribe({
+      next: raw => {
+        if (!raw || typeof raw !== 'object' || !raw.datos) {
+          this.error = 'Respuesta inesperada del servidor';
+          this.cargando = false;
+          return;
+        }
+
+        this.rawMesasData = (raw as any).datos as Record<string, MesaRaw>;
+
+        this.mesasConComida = Object.entries(this.rawMesasData)
+          .map(([mesaId, mesa]) => {
+            const platos: ItemConIndex[] = [];
+            mesa.contenido.forEach((item, idx) => {
+              const cat = (item.categoria ?? item.tipoProducto ?? '').toLowerCase();
+              if (cat.includes('comida') && item.estado === 'En preparación') {
+                platos.push({ ...item, originalIndex: idx });
+              }
+            });
+            return { mesaId, platos };
+          })
+          .filter(m => m.platos.length > 0);
+
+        this.cargando = false;
+      },
+      error: err => {
+        console.error(err);
+        this.error = 'Error cargando datos de mesas';
+        this.cargando = false;
+      }
+    });
+  }
+
+  enviarAPreparado(mesaId: string, originalIndex: number): void {
+    const mesa = this.rawMesasData[mesaId];
+    if (!mesa) return;
+
+    const contenidoActualizado = mesa.contenido.map((item, idx) =>
+      idx === originalIndex
+        ? { ...item, estado: 'Preparado' }
+        : item
+    );
+
+    this.servicios.guardarOModificarMesa({
+      mesaId,
+      contenido: contenidoActualizado,
+      estado: mesa.estado,
+      anotaciones: mesa.anotaciones
+    }).subscribe({
+      next: () => this.recargar(),
+      error: err => {
+        console.error(err);
+        alert('No se pudo enviar a cocina');
+      }
+    });
+  }
 }
