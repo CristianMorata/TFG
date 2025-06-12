@@ -3,11 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 
-export interface ConfiguracionFlags {
-  parametro1: boolean;
-  parametro2: boolean;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -26,6 +21,22 @@ export class ConfiguracionService {
       {
         anadirProductosCamarero: camarero,
         anadirProductosClientes: cliente
+      }
+    );
+  }
+
+  getCategorias(): Observable<any> {
+    return this.http.get<any>(
+      `https://obtenercategorias-rs2gjhs4iq-uc.a.run.app`
+    );
+  }
+
+  modificarCategoria(nombreCategoria: string, destino: string): Observable<any> {
+    return this.http.post(
+      `https://modificarcategoria-rs2gjhs4iq-uc.a.run.app`,
+      {
+        nombreCategoria,
+        destino
       }
     );
   }

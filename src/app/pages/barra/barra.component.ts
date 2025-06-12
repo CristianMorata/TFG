@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ServiciosService } from '../../services/servicios.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
+import { User } from 'firebase/auth';
+import { Router } from '@angular/router';
 
 interface Producto {
   nombre: string;
@@ -32,7 +35,7 @@ interface MesaConBebidas {
 @Component({
   selector: 'barra',
   standalone: true,
-  imports: [ CommonModule ],
+  imports: [CommonModule],
   templateUrl: './barra.component.html',
   styleUrls: ['./barra.component.css']
 })
@@ -42,7 +45,29 @@ export class BarraComponent implements OnInit {
   cargando = false;
   error: string | null = null;
 
-  constructor(private servicios: ServiciosService) {}
+  usuario: User | null = null;
+  tipoUsuario: string | null = null;
+
+  constructor(private servicios: ServiciosService, private authService: AuthService, private router: Router) {
+    // Obtenemos el usuario y su tipo
+    this.authService.user$.subscribe(user => {
+      this.usuario = user;
+
+      if (user) {
+        this.authService.getUserRole(user.uid).then(tipo => {
+          this.tipoUsuario = tipo;
+          console.log('Tipo de usuario:', this.tipoUsuario);
+
+          // Verificar si el usuario es permitido en la página
+          if (this.tipoUsuario !== 'admin' && this.tipoUsuario !== 'empleado') {
+            this.router.navigate(['/carta']);
+          }
+        });
+      } else {
+        this.router.navigate(['/carta']);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.recargar();

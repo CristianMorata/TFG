@@ -5,6 +5,7 @@ import { User } from 'firebase/auth';
 import { CommonModule } from '@angular/common';
 import { ServiciosService } from '../../services/servicios.service';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'mesa',
@@ -42,18 +43,29 @@ export class MesaComponent {
   constructor(
     private route: ActivatedRoute,
     private service: ServiciosService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.route.paramMap.subscribe(params => {
       this.mesaId = params.get('id');
     });
 
+    // Obtenemos el usuario y su tipo
     this.authService.user$.subscribe(user => {
       this.usuario = user;
+
       if (user) {
         this.authService.getUserRole(user.uid).then(tipo => {
           this.tipoUsuario = tipo;
+          console.log('Tipo de usuario:', this.tipoUsuario);
+
+          // Verificar si el usuario es permitido en la página
+          if (this.tipoUsuario !== 'admin' && this.tipoUsuario !== 'empleado') {
+            this.router.navigate(['/carta']); // o donde tú decidas
+          }
         });
+      } else {
+        this.router.navigate(['/carta']);
       }
     });
 

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ServiciosService } from '../../services/servicios.service';
 import { AuthService } from '../../services/auth.service';
 import { User } from 'firebase/auth';
 import { Router } from '@angular/router';
@@ -29,10 +28,19 @@ export class MesasComponent implements OnInit {
     // Obtenemos el usuario y su tipo
     this.authService.user$.subscribe(user => {
       this.usuario = user;
+
       if (user) {
         this.authService.getUserRole(user.uid).then(tipo => {
           this.tipoUsuario = tipo;
+          console.log('Tipo de usuario:', this.tipoUsuario);
+
+          // Verificar si el usuario es permitido en la página
+          if (this.tipoUsuario !== 'admin' && this.tipoUsuario !== 'empleado') {
+            this.router.navigate(['/carta']); // o donde tú decidas
+          }
         });
+      } else {
+        this.router.navigate(['/carta']);
       }
     });
   }
