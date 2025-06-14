@@ -48,6 +48,8 @@ export class BarraComponent implements OnInit {
   usuario: User | null = null;
   tipoUsuario: string | null = null;
 
+  categoriasConDestino: Record<string, { destino: string }> = {};
+
   constructor(private servicios: ServiciosService, private authService: AuthService, private router: Router) {
     // Obtenemos el usuario y su tipo
     this.authService.user$.subscribe(user => {
@@ -70,7 +72,27 @@ export class BarraComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.recargar();
+    this.cargarCategorias(() => {
+      this.recargar();
+    });
+  }
+
+  cargarCategorias(callback: () => void): void {
+    this.servicios.obetenerCategorias().subscribe({
+      next: res => {
+        if (res && res.categorias) {
+          this.categoriasConDestino = res.categorias;
+          callback(); // llamamos a recargar()
+        } else {
+          console.warn('No se pudieron cargar las categorías');
+          callback();
+        }
+      },
+      error: err => {
+        console.error('Error al cargar categorías:', err);
+        callback(); // seguimos aunque haya error
+      }
+    });
   }
 
   recargar(): void {
@@ -96,10 +118,10 @@ export class BarraComponent implements OnInit {
             const bebidas: Bebida[] = [];
 
             mesa.contenido.forEach((item, idx) => {
-              // Unificamos categoría/tipoProducto y chequeamos "bebida"
-              const cat = (item.categoria ?? item.tipoProducto ?? '')
-                .toLowerCase();
-              if (cat.includes('bebida') && item.estado === 'En preparación') {
+              const categoria = item.categoria ?? item.tipoProducto ?? '';
+              const destino = this.categoriasConDestino[categoria]?.destino;
+
+              if (destino === 'barra' && item.estado === 'En preparación') {
                 bebidas.push({ ...item, originalIndex: idx });
               }
             });

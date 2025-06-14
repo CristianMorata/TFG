@@ -28,7 +28,7 @@ export class ServiciosService {
     nombre: string,
     descripcion: string,
     precio: number,
-    alergenos: [],
+    alergenos: string[],
     visible: boolean,
     novedad: boolean,
     tipo_comida: string,
@@ -85,11 +85,15 @@ export class ServiciosService {
     return this.http.get<any>(`https://listartodaslasmesas-rs2gjhs4iq-uc.a.run.app`);
   }
 
-  // 2. Marcar uno como servido (suponiendo un PATCH o PUT)
+  // Marcar producto como servido
   marcarServido(productoId: number): Observable<any> {
     return this.http.patch(
       `https://listartodaslasmesas-rs2gjhs4iq-uc.a.run.app/productos/${productoId}`,
-      { estado: 'servido' }
+      { estado: 'Servido' }
     );
+  }
+
+  obetenerCategorias(): Observable<any> {
+    return this.http.get<any>(`https://obtenercategorias-rs2gjhs4iq-uc.a.run.app/`);
   }
 }

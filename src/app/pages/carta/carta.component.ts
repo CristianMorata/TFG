@@ -24,21 +24,39 @@ export class CartaComponent implements OnInit {
   authService = inject(AuthService);
   userRole: string | null = null;
 
+  mostrarFormularioNuevo: boolean = false;
+  nuevoProducto: any = {
+    nombre: '',
+    descripcion: '',
+    precio: 0,
+    alergenos: [],
+    visible: false,
+    novedad: false,
+    tipo_comida: '',
+    categoria: ''
+  };
+
+  categoriasDisponibles: string[] = [];
+
   anadirProducto(producto: {
     nombre: string;
     descripcion: string;
     precio: number;
-    alergenos: [];
+    alergenos: string | any[];
     visible: boolean;
     novedad: boolean;
     tipo_comida: string;
     categoria: string;
   }) {
+    const alergenosArray = typeof producto.alergenos === 'string'
+      ? producto.alergenos.split(',').map(a => a.trim()).filter(a => a)
+      : producto.alergenos;
+
     this.service.añadirProductoVenta$(
       producto.nombre,
       producto.descripcion,
       producto.precio,
-      producto.alergenos,
+      alergenosArray,
       producto.visible,
       producto.novedad,
       producto.tipo_comida,
@@ -46,8 +64,18 @@ export class CartaComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         console.log('Producto añadido:', response);
-        
         this.productos$ = this.service.listarProductosVenta$();
+        // Reiniciar el formulario
+        this.nuevoProducto = {
+          nombre: '',
+          descripcion: '',
+          precio: 0,
+          alergenos: [],
+          visible: false,
+          novedad: false,
+          tipo_comida: '',
+          categoria: ''
+        };
       },
       error: (error) => {
         console.error('Error al añadir el producto:', error);
@@ -58,7 +86,7 @@ export class CartaComponent implements OnInit {
   // Metodos necesarios para abrir popup de detalles del producto para modificacion
   verDetalles(producto: any) {
     this.productoSeleccionado = producto;
-    this.productoEditable = { ...producto }; // copia editable
+    this.productoEditable = { ...producto };
   }
 
   cerrarDetalles() {
@@ -68,15 +96,57 @@ export class CartaComponent implements OnInit {
 
   // Método para abrir el formulario de edición en pagina Carta y modificar el producto
   guardarCambios() {
-    this.service.modificarProducto(this.productoEditable).subscribe({
-      next: () => {
-        // console.log('Producto actualizado');
-        this.cerrarDetalles();
-      },
-      error: (err) => {
-        console.error('Error al actualizar producto:', err);
-      }
-    });
+    const originalCategoria = this.productoSeleccionado.categoria;
+    const nuevaCategoria = this.productoEditable.categoria;
+
+    if (originalCategoria !== nuevaCategoria) {
+      // Primero eliminamos
+      this.service.eliminarProducto({
+        id: this.productoEditable.id,
+        categoria: originalCategoria
+      }).subscribe({
+        next: () => {
+          // Solo si la eliminación fue exitosa, añadimos
+          this.service.añadirProductoVenta$(
+            this.productoEditable.nombre,
+            this.productoEditable.descripcion,
+            this.productoEditable.precio,
+            this.productoEditable.alergenos,
+            this.productoEditable.visible,
+            this.productoEditable.novedad,
+            this.productoEditable.tipo_comida,
+            nuevaCategoria
+          ).subscribe({
+            next: () => {
+              console.log('Producto movido y añadido correctamente');
+              this.cerrarDetalles();
+              this.productos$ = this.service.listarProductosVenta$(); // actualizar solo después de confirmación
+            },
+            error: err => {
+              console.error('Error al añadir en nueva categoría:', err);
+              alert('No se pudo añadir el producto en la nueva categoría');
+            }
+          });
+        },
+        error: err => {
+          console.error('Error al eliminar de categoría antigua:', err);
+          alert('No se pudo eliminar el producto de la categoría original');
+        }
+      });
+    } else {
+      // Modificación normal
+      this.service.modificarProducto(this.productoEditable).subscribe({
+        next: () => {
+          console.log('Producto actualizado correctamente');
+          this.cerrarDetalles();
+          this.productos$ = this.service.listarProductosVenta$(); // actualizar aquí también
+        },
+        error: (err) => {
+          console.error('Error al actualizar producto:', err);
+          alert('No se pudo actualizar el producto');
+        }
+      });
+    }
   }
 
   // Método para eliminar un producto
@@ -91,8 +161,9 @@ export class CartaComponent implements OnInit {
 
     this.service.eliminarProducto(this.productoEditable).subscribe({
       next: () => {
-        // console.log('Producto eliminado');
+        console.log('Producto eliminado correctamente');
         this.cerrarDetalles();
+        this.productos$ = this.service.listarProductosVenta$();
       },
       error: (err) => {
         console.error('Error al eliminar producto:', err);
@@ -116,6 +187,19 @@ export class CartaComponent implements OnInit {
       } else {
         console.warn('No hay usuario autenticado.');
       }
+    });
+
+    // Cargar categorías al iniciar
+    this.service.obetenerCategorias().subscribe({
+      next: res => {
+        const categorias = res?.categorias;
+        if (categorias && typeof categorias === 'object') {
+          this.categoriasDisponibles = Object.keys(categorias);
+        } else {
+          console.warn('Categorías no válidas:', res);
+        }
+      },
+      error: err => console.error('Error al cargar categorías', err)
     });
   }
 }

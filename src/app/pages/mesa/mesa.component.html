@@ -1,4 +1,4 @@
-<div *ngIf="esEmpleadoOAdmin">
+<!-- <div *ngIf="esEmpleadoOAdmin"> -->
   <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300">
     <h1 class="text-2xl font-bold mb-4">Mesa {{ mesaId }}</h1>
   </div>
@@ -32,7 +32,7 @@
 
   <!-- Botón editar / guardar cambios -->
   <div class="mt-4 flex gap-2">
-    <button *ngIf="mesaExiste && modoEdicion" (click)="activarModoEdicion()"
+    <button *ngIf="mesaExiste && !modoEdicion" (click)="activarModoEdicion()"
       class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
       Editar mesa
     </button>
@@ -142,4 +142,4 @@
       </div>
     </div>
   </div>
-</div>
+<!-- </div> -->

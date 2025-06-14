@@ -57,16 +57,17 @@ export class MesaComponent {
       if (user) {
         this.authService.getUserRole(user.uid).then(tipo => {
           this.tipoUsuario = tipo;
-          console.log('Tipo de usuario:', this.tipoUsuario);
+          // console.log('Tipo de usuario:', this.tipoUsuario);
 
           // Verificar si el usuario es permitido en la página
-          if (this.tipoUsuario !== 'admin' && this.tipoUsuario !== 'empleado') {
-            this.router.navigate(['/carta']); // o donde tú decidas
-          }
+          // if (this.tipoUsuario !== 'admin' && this.tipoUsuario !== 'empleado') {
+          //   this.router.navigate(['/carta']); // o donde tú decidas
+          // }
         });
-      } else {
-        this.router.navigate(['/carta']);
       }
+      //  else {
+      //   this.router.navigate(['/carta']);
+      // }
     });
 
     this.cargarProductos();
@@ -226,4 +227,6 @@ export class MesaComponent {
     this.modoEdicion = false;
     this.mesaContenidoBackup = [];
   }
+
+  
 }
