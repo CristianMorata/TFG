@@ -10,12 +10,10 @@
             <span class="mr-3">Servicio camarero</span>
             <div class="relative">
                 <input type="checkbox" [(ngModel)]="servicioCliente" (change)="onChange()" class="sr-only peer" />
-                <div
-                    class="w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 transition-colors duration-200
+                <div class="w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 transition-colors duration-200
                     peer-checked:bg-blue-600">
                 </div>
-                <div
-                    class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200
+                <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200
                     peer-checked:translate-x-5">
                 </div>
             </div>
@@ -38,10 +36,12 @@
         <button class="px-3 py-1 bg-green-600 text-white rounded" (click)="abrirPopup()">Añadir nueva</button>
     </div>
 
-    <!-- Popup -->
+    <!-- Popup Categoría -->
     <div *ngIf="mostrarPopup"
         class="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
         <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+            <button class="absolute top-2 right-2 text-xl text-gray-400 hover:text-black"
+                (click)="cerrarPopup()">&times;</button>
             <h3 class="text-xl font-semibold mb-4">{{ modoEdicion ? 'Modificar' : 'Añadir' }} Categoría</h3>
 
             <label class="block mb-2">
@@ -59,9 +59,53 @@
             </label>
 
             <div class="flex justify-end gap-2">
-                <button class="px-4 py-2 bg-gray-300 rounded" (click)="cerrarPopup()">Cancelar</button>
                 <button class="px-4 py-2 bg-blue-600 text-white rounded" (click)="guardarCategoria()">
                     {{ modoEdicion ? 'Guardar cambios' : 'Añadir' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alérgenos -->
+    <div class="mt-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold mb-3">Alérgenos</h2>
+        <ul class="mb-3">
+            <li *ngFor="let nombre of getAlergenosKeys()" class="flex justify-between items-center py-1">
+                <span>{{ nombre }}</span>
+                <div class="flex gap-2">
+                    <button class="text-blue-600 hover:underline"
+                        (click)="abrirPopupAlergeno(nombre)">Modificar</button>
+                </div>
+            </li>
+        </ul>
+        <button class="px-3 py-1 bg-green-600 text-white rounded" (click)="abrirPopupAlergeno()">Añadir nuevo</button>
+    </div>
+
+    <!-- Popup Alérgeno -->
+    <div *ngIf="mostrarPopupAlergeno"
+        class="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+
+            <!-- Botón X para cerrar -->
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" (click)="cerrarPopupAlergeno()">
+                &times;
+            </button>
+
+            <h3 class="text-xl font-semibold mb-4">{{ modoEdicionAlergeno ? 'Modificar' : 'Añadir' }} Alérgeno</h3>
+
+            <label class="block mb-4">
+                Nombre:
+                <input [value]="nombreAlergeno" (input)="nombreAlergeno = $any($event.target).value"
+                    class="w-full p-2 border rounded" />
+            </label>
+
+            <div class="flex justify-end gap-2">
+                <button *ngIf="modoEdicionAlergeno" class="px-4 py-2 bg-red-600 text-white rounded"
+                    (click)="borrarAlergeno(nombreAlergenoOriginal)">
+                    Eliminar
+                </button>
+                <button class="px-4 py-2 bg-blue-600 text-white rounded" (click)="guardarAlergeno()">
+                    {{ modoEdicionAlergeno ? 'Guardar cambios' : 'Añadir' }}
                 </button>
             </div>
         </div>

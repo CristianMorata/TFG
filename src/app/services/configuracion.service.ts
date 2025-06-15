@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 
 @Injectable({
@@ -38,6 +38,26 @@ export class ConfiguracionService {
         nombreCategoria,
         destino
       }
+    );
+  }
+
+  getAlergenos(): Observable<any> {
+    return this.http.get<any>(
+      'https://obteneralergenos-rs2gjhs4iq-uc.a.run.app'
+    );
+  }
+
+  modificarAlergeno(nombreAlergeno: string): Observable<any> {
+    return this.http.post(
+      'https://modificaralergeno-rs2gjhs4iq-uc.a.run.app',
+      { nombreAlergenos: nombreAlergeno }
+    );
+  }
+
+  eliminarAlergeno(nombreAlergeno: string): Observable<any> {
+    return this.http.post(
+      'https://eliminaralergeno-rs2gjhs4iq-uc.a.run.app',
+      { nombre: nombreAlergeno }
     );
   }
 }
