@@ -6,25 +6,25 @@
   <section class="mb-6 p-4 border border-gray-300 rounded-lg bg-white shadow-sm">
     <h3 class="text-xl font-semibold mb-3">Mesa #{{ mesa.mesaId }}</h3>
     <ul>
-      <li
-        *ngFor="let plato of mesa.platos; let i = index"
-        class="flex justify-between items-center py-2 border-b last:border-b-0"
-      >
+      <li *ngFor="let plato of mesa.platos; let i = index"
+        class="flex justify-between items-center py-2 border-b last:border-b-0">
         <span class="text-gray-800">
           {{ plato.nombre }} ({{ plato.hora }})
         </span>
-        <button
-          (click)="enviarAPreparado(mesa.mesaId, plato.originalIndex)"
-          class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-        >
+        <button (click)="enviarAPreparado(mesa.mesaId, plato.originalIndex)"
+          class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-blue-300">
           Preparado
         </button>
       </li>
     </ul>
+
+    <button (click)="marcarTodosComoServido(mesa.mesaId)"
+      class="mb-2 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-blue-300">
+      Marcar todos como servidos
+    </button>
   </section>
 </ng-container>
 
-<div *ngIf="!cargando && !error && mesasConComida.length === 0"
-     class="text-center py-4">
+<div *ngIf="!cargando && !error && mesasConComida.length === 0" class="text-center py-4">
   No hay platos de comida pendientes.
 </div>
