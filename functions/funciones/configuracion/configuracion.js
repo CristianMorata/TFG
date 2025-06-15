@@ -61,3 +61,43 @@ exports.obtenerConfiguracion = onRequest((req, res) => {
         }
     });
 });
+
+exports.modificarCategoria = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        const { nombreCategoria, destino } = req.body;
+
+        // Validaciones básicas
+        if (typeof nombreCategoria !== "string" || typeof destino !== "string") {
+            return res.status(400).json({
+                error: "Debe incluir 'nombreCategoria' y 'destino', ambos como strings"
+            });
+        }
+
+        try {
+            const ref = db.ref(`configuracion/categorias/${nombreCategoria}`);
+            await ref.set({ destino });
+
+            return res.status(200).json({
+                mensaje: `Categoría '${nombreCategoria}' actualizada correctamente`,
+                categoria: { nombre: nombreCategoria, destino }
+            });
+        } catch (err) {
+            console.error("Error al modificar categoría:", err);
+            return res.status(500).json({ error: "Error al modificar categoría" });
+        }
+    });
+});
+
+exports.obtenerCategorias = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        try {
+            const snap = await db.ref("configuracion/categorias").once("value");
+            const categorias = snap.val() || [];
+
+            return res.status(200).json({ categorias });
+        } catch (err) {
+            console.error("Error al obtener categorías:", err);
+            return res.status(500).json({ error: "Error al obtener categorías" });
+        }
+    });
+});

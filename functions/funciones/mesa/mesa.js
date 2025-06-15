@@ -49,10 +49,10 @@ exports.cerrarMesa = onRequest((req, res) => {
             return res.status(405).send("Método no permitido");
         }
 
-        const { mesaId } = req.body;
+        const { mesaId, metodoPago } = req.body;
 
-        if (!mesaId) {
-            return res.status(400).send("Falta el ID de la mesa (mesaId)");
+        if (!mesaId || !metodoPago) {
+            return res.status(400).send("Faltan parámetros: mesaId o metodoPago");
         }
 
         try {
@@ -64,19 +64,39 @@ exports.cerrarMesa = onRequest((req, res) => {
             }
 
             const infoMesa = snapshot.val();
-            const fechaMesa = Date.now();
 
-            const historialRef = db.ref("historial-mesas").push();
+            // 🕒 Fecha y hora del cierre
+            const ahora = new Date();
+            const dia = String(ahora.getDate()).padStart(2, '0');
+            const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+            const año = ahora.getFullYear();
+            const hora = String(ahora.getHours()).padStart(2, '0');
+            const minuto = String(ahora.getMinutes()).padStart(2, '0');
+            const segundo = String(ahora.getSeconds()).padStart(2, '0');
+
+            const fechaKey = `${dia}-${mes}-${año}`;
+            const horaCierre = `${hora}:${minuto}:${segundo}`;
+            const fechaCierreCompleta = `${dia}/${mes}/${año} ${horaCierre}`;
+
+            // 💰 Calcular total pagado
+            const contenido = infoMesa.contenido || [];
+            const totalPagado = contenido.reduce((sum, prod) => sum + (parseFloat(prod.precio) || 0), 0);
+
+            const historialRef = db.ref(`historial-mesas/${fechaKey}/mesa${mesaId} ${horaCierre}`);
+
             await historialRef.set({
-                fecha_mesa: fechaMesa,
-                info_mesa: infoMesa
+                fechaCierre: fechaCierreCompleta,
+                metodoPago,
+                totalPagado,
+                anotaciones: infoMesa.anotaciones || '',
+                contenido
             });
 
             await mesaRef.remove();
 
             return res.status(200).send({
-                mensaje: "Mesa cerrada y archivada exitosamente",
-                historialId: historialRef.key
+                mensaje: "Mesa cerrada y archivada correctamente",
+                historialPath: historialRef.toString()
             });
         } catch (error) {
             console.error("Error al cerrar mesa:", error);
