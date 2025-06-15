@@ -62,6 +62,7 @@ exports.obtenerConfiguracion = onRequest((req, res) => {
     });
 });
 
+// Sección de categorías
 exports.modificarCategoria = onRequest((req, res) => {
     corsHandler(req, res, async () => {
         const { nombreCategoria, destino } = req.body;
@@ -98,6 +99,70 @@ exports.obtenerCategorias = onRequest((req, res) => {
         } catch (err) {
             console.error("Error al obtener categorías:", err);
             return res.status(500).json({ error: "Error al obtener categorías" });
+        }
+    });
+});
+
+// Sección de alérgenos
+exports.modificarAlergeno = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        const { nombreAlergenos } = req.body;
+
+        if (typeof nombreAlergenos !== "string" || !nombreAlergenos.trim()) {
+            return res.status(400).json({
+                error: "Debe incluir 'nombreAlergenos' como string válido"
+            });
+        }
+
+        try {
+            const ref = db.ref(`configuracion/alergenos/${nombreAlergenos}`);
+            await ref.set(true);
+
+            return res.status(200).json({
+                mensaje: `Alérgeno '${nombreAlergenos}' actualizado correctamente`,
+                alergeno: { nombre: nombreAlergenos }
+            });
+        } catch (err) {
+            console.error("Error al modificar alérgeno:", err);
+            return res.status(500).json({ error: "Error al modificar alérgeno" });
+        }
+    });
+});
+
+exports.obtenerAlergenos = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        try {
+            const snap = await db.ref("configuracion/alergenos").once("value");
+            const alergenos = snap.val() || {};
+
+            return res.status(200).json({ alergenos });
+        } catch (err) {
+            console.error("Error al obtener alérgenos:", err);
+            return res.status(500).json({ error: "Error al obtener alérgenos" });
+        }
+    });
+});
+
+exports.eliminarAlergeno = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        const { nombre } = req.body;
+
+        if (typeof nombre !== "string" || !nombre.trim()) {
+            return res.status(400).json({
+                error: "Debe incluir 'nombre' del alérgeno a eliminar"
+            });
+        }
+
+        try {
+            const ref = db.ref(`configuracion/alergenos/${nombre}`);
+            await ref.remove();
+
+            return res.status(200).json({
+                mensaje: `Alérgeno '${nombre}' eliminado correctamente`
+            });
+        } catch (err) {
+            console.error("Error al eliminar alérgeno:", err);
+            return res.status(500).json({ error: "Error al eliminar alérgeno" });
         }
     });
 });

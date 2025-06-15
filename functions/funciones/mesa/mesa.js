@@ -65,7 +65,7 @@ exports.cerrarMesa = onRequest((req, res) => {
 
             const infoMesa = snapshot.val();
 
-            // 🕒 Fecha y hora del cierre
+            // Fecha y hora del cierre
             const ahora = new Date();
             const dia = String(ahora.getDate()).padStart(2, '0');
             const mes = String(ahora.getMonth() + 1).padStart(2, '0');
