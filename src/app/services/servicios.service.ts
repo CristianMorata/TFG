@@ -75,9 +75,8 @@ export class ServiciosService {
     return this.http.post('https://guardaromodificarmesa-rs2gjhs4iq-uc.a.run.app', data);
   }
 
-  cerrarMesa(mesaId: string) {
-    const url = 'https://cerrarmesa-rs2gjhs4iq-uc.a.run.app';
-    return this.http.post(url, { mesaId });
+  cerrarMesa(mesaId: string, metodoPago: string) {
+    return this.http.post('https://cerrarmesa-rs2gjhs4iq-uc.a.run.app', { mesaId, metodoPago });
   }
 
   // Funciones del objeto MESA

@@ -228,5 +228,75 @@ export class MesaComponent {
     this.mesaContenidoBackup = [];
   }
 
-  
+
+  // Sección para cerrar la mesa
+  mostrarPopupCierre = false;
+  opcionPagoSeleccionada: string = '';
+  pagoEfectivo: string = '';
+  pagoTarjeta: string = '';
+  totalMesa: number = 0;
+  mensajeErrorCierre: string = '';
+
+  abrirPopupCierreMesa() {
+    this.totalMesa = this.mesaContenidoExistente.reduce((total, prod) => total + (parseFloat(prod.precio) || 0), 0);
+    this.mostrarPopupCierre = true;
+  }
+
+  cerrarPopupCierreMesa() {
+    this.mostrarPopupCierre = false;
+    this.opcionPagoSeleccionada = '';
+    this.pagoEfectivo = '';
+    this.pagoTarjeta = '';
+  }
+
+  confirmarCerrarMesa(): void {
+    this.mensajeErrorCierre = '';
+
+    if (!this.opcionPagoSeleccionada) {
+      this.mensajeErrorCierre = 'Selecciona un método de pago.';
+      return;
+    }
+
+    let metodoPagoFinal = this.opcionPagoSeleccionada;
+
+    if (this.opcionPagoSeleccionada === 'Ambos') {
+      // Validación: ambos campos deben tener valor (aunque sea "0")
+      if (this.pagoEfectivo.trim() === '' || this.pagoTarjeta.trim() === '') {
+        this.mensajeErrorCierre = 'Debes introducir cantidades en ambos campos: efectivo y tarjeta.';
+        return;
+      }
+
+      const efectivo = parseFloat(this.pagoEfectivo);
+      const tarjeta = parseFloat(this.pagoTarjeta);
+
+      if (isNaN(efectivo) || isNaN(tarjeta)) {
+        this.mensajeErrorCierre = 'Introduce valores numéricos válidos.';
+        return;
+      }
+
+      const suma = efectivo + tarjeta;
+
+      if (Math.abs(suma - this.totalMesa) > 0.01) {
+        this.mensajeErrorCierre = 'La suma de efectivo y tarjeta no coincide con el total.';
+        return;
+      }
+
+      metodoPagoFinal = `Ambos (Efectivo = ${efectivo} | Tarjeta = ${tarjeta})`;
+    }
+
+    if (!this.mesaId) return;
+
+    this.service.cerrarMesa(this.mesaId, metodoPagoFinal).subscribe({
+      next: () => {
+        alert('Mesa cerrada correctamente');
+        this.router.navigate(['/mesas']);
+      },
+      error: (err) => {
+        console.error('Error al cerrar la mesa:', err);
+        alert('Hubo un problema al cerrar la mesa');
+      }
+    });
+
+    this.mostrarPopupCierre = false;
+  }
 }
