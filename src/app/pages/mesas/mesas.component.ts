@@ -141,14 +141,26 @@ export class MesasComponent implements OnInit {
       .then(data => {
         const todasMesas = data.datos || {};
 
+        const calcularEstadoMesa = (productos: any[]): string => {
+          if (!productos || productos.length === 0) return 'Libre';
+
+          const hayEnPreparacion = productos.some(p => p.estado === 'En preparación');
+          const todosPreparados = productos.every(p => p.estado === 'Preparado');
+
+          if (hayEnPreparacion) return 'En preparación';
+          if (todosPreparados) return 'Preparada';
+
+          return 'Libre';
+        };
+
         this.mesasFijas.forEach(m => {
-          const mesaEnFirebase = todasMesas[m.id];
-          m.estado = mesaEnFirebase?.estado || 'Libre';
+          const mesaFirebase = todasMesas[m.id];
+          m.estado = calcularEstadoMesa(mesaFirebase?.contenido || []);
         });
 
         this.mesasExtras.forEach(m => {
-          const mesaEnFirebase = todasMesas[m.id];
-          m.estado = mesaEnFirebase?.estado || 'Libre';
+          const mesaFirebase = todasMesas[m.id];
+          m.estado = calcularEstadoMesa(mesaFirebase?.contenido || []);
         });
       });
   }

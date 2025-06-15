@@ -148,7 +148,7 @@ export class BarraComponent implements OnInit {
     // 1) Clonamos y actualizamos sólo el item marcado
     const contenidoActualizado = mesa.contenido.map((item, idx) =>
       idx === originalIndex
-        ? { ...item, estado: 'servido' }
+        ? { ...item, estado: 'Preparado' }
         : item
     );
 
@@ -163,6 +163,36 @@ export class BarraComponent implements OnInit {
       error: err => {
         console.error(err);
         alert('No se pudo marcar como servido');
+      }
+    });
+  }
+
+  marcarTodosComoServido(mesaId: string): void {
+    const mesa = this.rawMesasData[mesaId];
+    if (!mesa) return;
+
+    const contenidoActualizado = mesa.contenido.map((item, idx) => {
+      const categoria = item.categoria ?? item.tipoProducto ?? '';
+      const destino = this.categoriasConDestino[categoria]?.destino;
+
+      // Solo marcamos los de barra que estén en preparación
+      if (destino === 'barra' && item.estado === 'En preparación') {
+        return { ...item, estado: 'Preparado' };
+      }
+
+      return item; // El resto se mantiene igual
+    });
+
+    this.servicios.guardarOModificarMesa({
+      mesaId,
+      contenido: contenidoActualizado,
+      estado: mesa.estado,
+      anotaciones: mesa.anotaciones
+    }).subscribe({
+      next: () => this.recargar(),
+      error: err => {
+        console.error(err);
+        alert('No se pudieron marcar todos como servidos');
       }
     });
   }
