@@ -199,3 +199,45 @@ exports.listarMesasExtra = onRequest((req, res) => {
         }
     });
 });
+
+exports.actualizarLlamadaOCuenta = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        if (req.method !== "POST") {
+            return res.status(405).send("Método no permitido");
+        }
+
+        const { mesaId, llamarCamarero, pedirCuenta } = req.body;
+
+        if (!mesaId) {
+            return res.status(400).send("Falta el ID de la mesa (mesaId)");
+        }
+
+        try {
+            const mesaRef = db.ref(`mesa/${mesaId}`);
+            const snapshot = await mesaRef.once("value");
+
+            if (!snapshot.exists()) {
+                return res.status(404).send("La mesa no existe");
+            }
+
+            const actualizaciones = {};
+            if (typeof llamarCamarero === "boolean") {
+                actualizaciones.llamarCamarero = llamarCamarero;
+            }
+            if (typeof pedirCuenta === "object" && pedirCuenta !== null) {
+                actualizaciones.pedirCuenta = {
+                    efectivo: !!pedirCuenta.efectivo,
+                    tarjeta: !!pedirCuenta.tarjeta,
+                    ambos: !!pedirCuenta.ambos
+                };
+            }
+
+            await mesaRef.update(actualizaciones);
+
+            return res.status(200).json({ mensaje: "Actualización realizada correctamente" });
+        } catch (error) {
+            console.error("Error al actualizar llamada o cuenta:", error);
+            return res.status(500).send("Error interno del servidor");
+        }
+    });
+});
