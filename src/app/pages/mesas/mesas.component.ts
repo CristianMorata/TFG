@@ -148,7 +148,7 @@ export class MesasComponent implements OnInit {
           const todosPreparados = productos.every(p => p.estado === 'Preparado');
 
           let tiempoEnPreparacion = 0;
-          if (hayEnPreparacion) {
+          if (hayEnPreparacion) {   
             // Busca el producto en preparación más antiguo
             const productosEnPrep = productos.filter(p => p.estado === 'En preparación' && p.fechaEnPreparacion);
             if (productosEnPrep.length > 0) {

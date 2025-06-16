@@ -187,6 +187,15 @@ export class CartaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let alergenosListos = false;
+    let productosListos = false;
+
+    const intentarFiltrar = () => {
+      if (alergenosListos && productosListos) {
+        this.filtrarProductos();
+      }
+    };
+
     this.auth.onAuthStateChanged(async (user) => {
       if (user) {
         this.userRole = await this.authService.getUserRole(user.uid);
@@ -196,43 +205,33 @@ export class CartaComponent implements OnInit {
       }
     });
 
-    // Cargar categorías al iniciar
     this.service.obetenerCategorias().subscribe({
       next: res => {
         const categorias = res?.categorias;
         if (categorias && typeof categorias === 'object') {
           this.categoriasDisponibles = Object.keys(categorias);
-        } else {
-          console.warn('Categorías no válidas:', res);
         }
-      },
-      error: err => console.error('Error al cargar categorías', err)
+      }
     });
 
-    // Cargar productos y extraer alérgenos únicos
-    this.productos$.subscribe(productos => {
-      this.productos = productos;
-      this.filtrarProductos();
-      const alergenosSet = new Set<string>();
-      productos.forEach((p: any) => {
-        if (Array.isArray(p.alergenos)) {
-          p.alergenos.forEach((a: string) => alergenosSet.add(a));
-        }
-      });
-      this.alergenosDisponibles = Array.from(alergenosSet).sort();
-    });
-
-    // Cargar alergernos al iniciar
     this.service.getAlergenosDisponibles().subscribe({
       next: (alergenos) => {
         this.alergenosDisponibles = alergenos;
-      },
-      error: err => console.error('Error al cargar alérgenos disponibles', err)
+        alergenosListos = true;
+        intentarFiltrar();
+      }
+    });
+
+    this.productos$.subscribe(productos => {
+      this.productos = productos;
+      productosListos = true;
+      intentarFiltrar();
     });
   }
 
   limpiarAlergenos() {
     this.alergenosSeleccionados = [];
+    this.filtrarProductos();
   }
 
   toggleAlergeno(alergeno: string, checked: boolean) {
@@ -244,7 +243,6 @@ export class CartaComponent implements OnInit {
       this.alergenosSeleccionados = this.alergenosSeleccionados.filter(a => a !== alergeno);
     }
 
-    // ✅ Usar el filtro correcto
     this.filtrarProductos();
   }
 
