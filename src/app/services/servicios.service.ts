@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 // export interface ProductoVenta {
 //   id: string;
@@ -94,5 +94,10 @@ export class ServiciosService {
 
   obetenerCategorias(): Observable<any> {
     return this.http.get<any>(`https://obtenercategorias-rs2gjhs4iq-uc.a.run.app/`);
+  }
+
+  getAlergenosDisponibles(): Observable<string[]> {
+    return this.http.get<any>('https://obteneralergenos-rs2gjhs4iq-uc.a.run.app')
+      .pipe(map(res => Object.keys(res.alergenos || {})));
   }
 }
