@@ -1,28 +1,80 @@
-<ng-container *ngFor="let mesa of mesasConBebidas">
-  <section class="mb-6 p-4 border border-gray-300 rounded-lg bg-white shadow-sm">
-    <h3 class="text-xl font-semibold mb-3">Mesa #{{ mesa.mesaId }}</h3>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-2">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8 text-center text-blue-700 dark:text-blue-300 flex items-center justify-center gap-2 drop-shadow">
+      <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8M12 17v4m-6-4a6 6 0 1112 0v4H6v-4zM12 3v4m0 0a4 4 0 100 8 4 4 0 000-8z" />
+      </svg>
+      Barra - Bebidas en preparación
+    </h1>
 
-    <ul>
-      <li *ngFor="let bebida of mesa.bebidas; let i = index"
-        class="flex justify-between items-center py-2 border-b last:border-b-0">
-        <span class="text-gray-800">
-          {{ bebida.nombre }} ({{ bebida.hora }})
-        </span>
-        <button (click)="marcarComoServido(mesa.mesaId, bebida.originalIndex)"
-          class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-green-300"
-          [attr.aria-label]="'Marcar ' + bebida.nombre + ' como servido'">
-          Servido
-        </button>
-      </li>
-    </ul>
+    <ng-container *ngIf="cargando">
+      <div class="flex justify-center items-center py-12">
+        <svg class="animate-spin h-8 w-8 text-blue-500 mr-2" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+        </svg>
+        <span class="text-blue-700 dark:text-blue-200 text-lg">Cargando bebidas...</span>
+      </div>
+    </ng-container>
 
-    <button (click)="marcarTodosComoServido(mesa.mesaId)"
-      class="mb-2 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded focus:outline-none focus:ring-2 focus:ring-blue-300">
-      Marcar todos como servidos
-    </button>
-  </section>
-</ng-container>
+    <ng-container *ngIf="error">
+      <div class="bg-red-100 border border-red-300 text-red-700 rounded-lg p-4 mb-6 text-center">
+        {{ error }}
+      </div>
+    </ng-container>
 
-<div *ngIf="!cargando && !error && mesasConBebidas.length === 0" class="text-center py-4">
-  No hay bebidas pendientes.
+    <ng-container *ngIf="!cargando && !error && mesasConBebidas.length === 0">
+      <div class="text-center py-10 text-gray-500 dark:text-gray-400 text-lg">
+        <svg class="mx-auto mb-2 w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8M12 17v4m-6-4a6 6 0 1112 0v4H6v-4zM12 3v4m0 0a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+        No hay bebidas pendientes.
+      </div>
+    </ng-container>
+
+    <ng-container *ngFor="let mesa of mesasConBebidas">
+      <section class="mb-8 p-6 border-2 border-blue-200 dark:border-blue-800 rounded-2xl bg-white/80 dark:bg-gray-800/80 shadow-lg transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-200 flex items-center gap-2">
+            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+              <text x="12" y="16" text-anchor="middle" font-size="10" fill="currentColor">{{ mesa.mesaId }}</text>
+            </svg>
+            Mesa #{{ mesa.mesaId }}
+          </h3>
+          <button (click)="marcarTodosComoServido(mesa.mesaId)"
+            class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Marcar todos como servidos
+          </button>
+        </div>
+
+        <ul class="divide-y divide-blue-100 dark:divide-blue-900">
+          <li *ngFor="let bebida of mesa.bebidas; let i = index"
+            class="flex justify-between items-center py-3">
+            <div class="flex items-center gap-3">
+              <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h2a4 4 0 014 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span class="text-gray-800 dark:text-gray-100 font-medium">
+                {{ bebida.nombre }}
+                <span class="text-xs text-gray-500 ml-2">({{ bebida.hora }})</span>
+              </span>
+            </div>
+            <button (click)="marcarComoServido(mesa.mesaId, bebida.originalIndex)"
+              class="flex items-center gap-1 px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-green-300"
+              [attr.aria-label]="'Marcar ' + bebida.nombre + ' como servido'">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Servido
+            </button>
+          </li>
+        </ul>
+      </section>
+    </ng-container>
+  </div>
 </div>

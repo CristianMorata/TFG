@@ -1,113 +1,102 @@
-<div *ngIf="!noEsAdmin()">
-    <div *ngIf="cargando">Cargando configuración...</div>
-    <div *ngIf="error" style="color: red;">{{ error }}</div>
+<div *ngIf="!noEsAdmin()" class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-2">
+  <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
 
-    <div *ngIf="!cargando && !error"
-        class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300">
-        <h1 class="text-2xl font-bold mb-4">Servicio permitido</h1>
-
-        <label class="flex items-center cursor-pointer mb-4">
-            <span class="mr-3">Servicio camarero</span>
-            <div class="relative">
-                <input type="checkbox" [(ngModel)]="servicioCliente" (change)="onChange()" class="sr-only peer" />
-                <div class="w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 transition-colors duration-200
-                    peer-checked:bg-blue-600">
-                </div>
-                <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200
-                    peer-checked:translate-x-5">
-                </div>
-            </div>
-            <span class="ml-3">Servicio cliente</span>
-        </label>
-        <div class="mb-2 text-sm text-gray-600">
-            Modo actual: <strong>{{ servicioCliente ? 'Servicio cliente' : 'Servicio camarero' }}</strong>
+    <!-- Servicio permitido -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex flex-col gap-4">
+      <h1 class="text-2xl font-bold mb-2 text-blue-700 dark:text-blue-300">Servicio permitido</h1>
+      <div *ngIf="cargando" class="text-gray-500">Cargando configuración...</div>
+      <div *ngIf="error" class="text-red-600">{{ error }}</div>
+      <div *ngIf="!cargando && !error">
+        <div class="flex items-center gap-4">
+          <span class="font-medium">Servicio camarero</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" [(ngModel)]="servicioCliente" (change)="onChange()" class="sr-only peer" />
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
+            <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 peer-checked:translate-x-5"></div>
+          </label>
+          <span class="font-medium">Servicio cliente</span>
         </div>
+        <div class="text-sm text-gray-600 mt-2">
+          Modo actual: <strong>{{ servicioCliente ? 'Servicio cliente' : 'Servicio camarero' }}</strong>
+        </div>
+      </div>
     </div>
 
     <!-- Categorías -->
-    <div class="mt-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-3">Categorías</h2>
-        <ul class="mb-3">
-            <li *ngFor="let nombre of getCategoriasKeys()" class="flex justify-between items-center py-1">
-                <span>{{ nombre }} - <strong>{{ categorias[nombre].destino }}</strong></span>
-                <button class="text-blue-600 hover:underline" (click)="abrirPopup(nombre)">Modificar</button>
-            </li>
-        </ul>
-        <button class="px-3 py-1 bg-green-600 text-white rounded" (click)="abrirPopup()">Añadir nueva</button>
-    </div>
-
-    <!-- Popup Categoría -->
-    <div *ngIf="mostrarPopup"
-        class="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <button class="absolute top-2 right-2 text-xl text-gray-400 hover:text-black"
-                (click)="cerrarPopup()">&times;</button>
-            <h3 class="text-xl font-semibold mb-4">{{ modoEdicion ? 'Modificar' : 'Añadir' }} Categoría</h3>
-
-            <label class="block mb-2">
-                Nombre:
-                <input [(ngModel)]="nombreCategoria" [readonly]="modoEdicion" class="w-full p-2 border rounded" />
-            </label>
-
-            <label class="block mb-2">
-                <input type="radio" name="destino" [(ngModel)]="destino" value="cocina" />
-                Cocina
-            </label>
-            <label class="block mb-4">
-                <input type="radio" name="destino" [(ngModel)]="destino" value="barra" />
-                Barra
-            </label>
-
-            <div class="flex justify-end gap-2">
-                <button class="px-4 py-2 bg-blue-600 text-white rounded" (click)="guardarCategoria()">
-                    {{ modoEdicion ? 'Guardar cambios' : 'Añadir' }}
-                </button>
-            </div>
-        </div>
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex flex-col gap-4">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-xl font-semibold text-green-700 dark:text-green-300">Categorías</h2>
+        <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded shadow" (click)="abrirPopup()">+ Nueva</button>
+      </div>
+      <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+        <li *ngFor="let nombre of getCategoriasKeys()" class="flex justify-between items-center py-2">
+          <span class="truncate">{{ nombre }} <span class="text-xs text-gray-500">({{ categorias[nombre].destino }})</span></span>
+          <button class="text-blue-600 hover:underline" (click)="abrirPopup(nombre)">Modificar</button>
+        </li>
+      </ul>
     </div>
 
     <!-- Alérgenos -->
-    <div class="mt-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-3">Alérgenos</h2>
-        <ul class="mb-3">
-            <li *ngFor="let nombre of getAlergenosKeys()" class="flex justify-between items-center py-1">
-                <span>{{ nombre }}</span>
-                <div class="flex gap-2">
-                    <button class="text-blue-600 hover:underline"
-                        (click)="abrirPopupAlergeno(nombre)">Modificar</button>
-                </div>
-            </li>
-        </ul>
-        <button class="px-3 py-1 bg-green-600 text-white rounded" (click)="abrirPopupAlergeno()">Añadir nuevo</button>
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex flex-col gap-4 md:col-span-2">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-xl font-semibold text-yellow-700 dark:text-yellow-300">Alérgenos</h2>
+        <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded shadow" (click)="abrirPopupAlergeno()">+ Nuevo</button>
+      </div>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+        <li *ngFor="let nombre of getAlergenosKeys()" class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 rounded px-3 py-2">
+          <span class="truncate">{{ nombre }}</span>
+          <button class="text-blue-600 hover:underline" (click)="abrirPopupAlergeno(nombre)">Modificar</button>
+        </li>
+      </ul>
     </div>
+  </div>
 
-    <!-- Popup Alérgeno -->
-    <div *ngIf="mostrarPopupAlergeno"
-        class="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-
-            <!-- Botón X para cerrar -->
-            <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-800" (click)="cerrarPopupAlergeno()">
-                &times;
-            </button>
-
-            <h3 class="text-xl font-semibold mb-4">{{ modoEdicionAlergeno ? 'Modificar' : 'Añadir' }} Alérgeno</h3>
-
-            <label class="block mb-4">
-                Nombre:
-                <input [value]="nombreAlergeno" (input)="nombreAlergeno = $any($event.target).value"
-                    class="w-full p-2 border rounded" />
-            </label>
-
-            <div class="flex justify-end gap-2">
-                <button *ngIf="modoEdicionAlergeno" class="px-4 py-2 bg-red-600 text-white rounded"
-                    (click)="borrarAlergeno(nombreAlergenoOriginal)">
-                    Eliminar
-                </button>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded" (click)="guardarAlergeno()">
-                    {{ modoEdicionAlergeno ? 'Guardar cambios' : 'Añadir' }}
-                </button>
-            </div>
-        </div>
+  <!-- Popup Categoría -->
+  <div *ngIf="mostrarPopup" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md relative flex flex-col gap-4">
+      <button class="absolute top-3 right-3 text-2xl text-gray-400 hover:text-black dark:hover:text-white" (click)="cerrarPopup()">&times;</button>
+      <h3 class="text-xl font-semibold mb-2">{{ modoEdicion ? 'Modificar' : 'Añadir' }} Categoría</h3>
+      <label class="block mb-2">
+        <span class="text-sm font-medium">Nombre:</span>
+        <input [(ngModel)]="nombreCategoria" [readonly]="modoEdicion" class="w-full p-2 border rounded mt-1" />
+      </label>
+      <div class="flex gap-4 mb-4">
+        <label class="flex items-center gap-2">
+          <input type="radio" name="destino" [(ngModel)]="destino" value="cocina" />
+          <span>Cocina</span>
+        </label>
+        <label class="flex items-center gap-2">
+          <input type="radio" name="destino" [(ngModel)]="destino" value="barra" />
+          <span>Barra</span>
+        </label>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded" (click)="guardarCategoria()">
+          {{ modoEdicion ? 'Guardar cambios' : 'Añadir' }}
+        </button>
+      </div>
     </div>
+  </div>
+
+  <!-- Popup Alérgeno -->
+  <div *ngIf="mostrarPopupAlergeno" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md relative flex flex-col gap-4">
+      <button class="absolute top-3 right-3 text-2xl text-gray-400 hover:text-black dark:hover:text-white" (click)="cerrarPopupAlergeno()">&times;</button>
+      <h3 class="text-xl font-semibold mb-2">{{ modoEdicionAlergeno ? 'Modificar' : 'Añadir' }} Alérgeno</h3>
+      <label class="block mb-4">
+        <span class="text-sm font-medium">Nombre:</span>
+        <input [value]="nombreAlergeno" (input)="nombreAlergeno = $any($event.target).value"
+          class="w-full p-2 border rounded mt-1" />
+      </label>
+      <div class="flex justify-between gap-2">
+        <button *ngIf="modoEdicionAlergeno" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
+          (click)="borrarAlergeno(nombreAlergenoOriginal)">
+          Eliminar
+        </button>
+        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded ml-auto" (click)="guardarAlergeno()">
+          {{ modoEdicionAlergeno ? 'Guardar cambios' : 'Añadir' }}
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

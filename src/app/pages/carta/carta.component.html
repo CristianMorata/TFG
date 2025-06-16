@@ -1,34 +1,168 @@
-<div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md transition-all duration-300">
-  <h1 class="text-2xl font-bold mb-4">Carta</h1>
+<div class="relative min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 
-  <button *ngIf="puedeEditar()" (click)="mostrarFormularioNuevo = true"
-    class="mb-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
-    Añadir producto
-  </button>
 
-  <!-- Lista de productos -->
-  <ng-container *ngIf="productos$ | async as productos; else sinProductos">
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-      <article *ngFor="let producto of productos"
-        class="relative bg-white rounded-2xl shadow p-4 border border-gray-200">
-        <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ producto.nombre }}</h2>
-        <p class="text-gray-600 text-sm mb-1 truncate">{{ producto.descripcion || 'Sin descripción.' }}</p>
-        <p class="text-gray-900 font-bold text-lg">{{ producto.precio }}€</p>
+  <!-- Botón añadir producto -->
+  <div class="max-w-6xl mx-auto px-4">
+    <h1 class="text-3xl font-bold mt-8 mb-4 text-center text-gray-800 dark:text-gray-100 drop-shadow">Carta</h1>
+    <div class="flex justify-end">
+      <button *ngIf="puedeEditar()" (click)="mostrarFormularioNuevo = true"
+        class="mb-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
+        Añadir producto
+      </button>
+    </div>
+  </div>
 
-        <!-- Botón con un If para que solo puedan verlos usuarios existentes y ron roles especificados -->
-        <button *ngIf="puedeEditar()" (click)="verDetalles(producto)"
-          class="absolute bottom-4 right-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition">
-          Ver más
-        </button>
-      </article>
-    </section>
-  </ng-container>
+  <!-- Filtro de alérgenos -->
+  <div class="max-w-6xl mx-auto px-4 mb-6">
+    <div class="flex flex-wrap items-center gap-2 bg-white/70 dark:bg-gray-800/70 rounded-lg p-3 shadow">
+      <label class="font-medium mr-2">Filtrar por alérgenos:</label>
+      <label *ngFor="let alergeno of alergenosDisponibles" class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded cursor-pointer shadow-sm hover:bg-blue-100 dark:hover:bg-blue-800 transition">
+        <input type="checkbox"
+               [checked]="alergenosSeleccionados.includes(alergeno)"
+               (change)="onAlergenoCheckboxChange($event, alergeno)"
+               class="accent-blue-600" />
+        <span class="text-sm">{{ alergeno }}</span>
+      </label>
+      <button type="button" (click)="limpiarAlergenos()" class="ml-2 text-xs px-2 py-1 rounded bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500">Limpiar</button>
+    </div>
+  </div>
 
-  <ng-template #sinProductos>
-    <p class="text-center text-gray-500 mt-10">No hay productos disponibles.</p>
-  </ng-template>
+  <!-- Filtro de categorías -->
+  <div class="max-w-6xl mx-auto px-4 mb-6">
+    <div class="flex flex-wrap items-center gap-2 bg-white/70 dark:bg-gray-800/70 rounded-lg p-3 shadow mt-3">
+      <label class="font-medium mr-2">Filtrar por categorías:</label>
+      <label *ngFor="let categoria of categoriasDisponibles" class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded cursor-pointer shadow-sm hover:bg-pink-100 dark:hover:bg-pink-800 transition">
+        <input type="checkbox"
+               [checked]="categoriasSeleccionadas?.includes(categoria)"
+               (change)="onCategoriaCheckboxChange($event, categoria)"
+               class="accent-pink-600" />
+        <span class="text-sm">{{ categoria }}</span>
+      </label>
+      <button type="button" (click)="limpiarCategorias()" class="ml-2 text-xs px-2 py-1 rounded bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500">Limpiar</button>
+    </div>
+  </div>
 
-  <p class="text-sm text-gray-500 mb-4">Rol actual: {{ userRole || 'Cargando rol...' }}</p>
+  <!-- Secciones Parallax -->
+     <!-- Bebida -->
+<section id="bebida"
+  class="parallax-section relative bg-fixed bg-cover bg-center py-8"
+  style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZGRmZmVkIi8+PC9zdmc+');">
+  <!-- Overlay para contraste -->
+  <div class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 pointer-events-none"></div>
+  <div class="relative max-w-6xl mx-auto px-4">
+    <h2 class="text-2xl md:text-3xl font-bold text-green-700 dark:text-green-300 mb-4 drop-shadow-lg">Bebida</h2>
+    <ng-container *ngIf="getProductosPorCategoria('bebida').length > 0; else sinBebida">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article *ngFor="let producto of getProductosPorCategoria('bebida')"
+          class="relative bg-white/90 dark:bg-gray-900/80 rounded-2xl shadow p-4 border-2 border-green-100 dark:border-green-900 hover:scale-105 transition">
+          <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ producto.nombre }}</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm mb-1 truncate">{{ producto.descripcion || 'Sin descripción.' }}</p>
+          <p class="text-gray-900 dark:text-gray-100 font-bold text-lg">{{ producto.precio }}€</p>
+          <div class="flex flex-wrap gap-1 mt-2">
+            <span *ngFor="let al of producto.alergenos" class="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200 px-2 py-0.5 rounded text-xs">{{ al }}</span>
+          </div>
+          <button *ngIf="puedeEditar()" (click)="verDetalles(producto)"
+            class="absolute bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition">
+            Ver más
+          </button>
+        </article>
+      </div>
+    </ng-container>
+    <ng-template #sinBebida>
+      <p class="text-center text-gray-500 mt-10">No hay bebidas disponibles.</p>
+    </ng-template>
+  </div>
+</section>
+
+<!-- Comida -->
+<section id="comida"
+  class="parallax-section relative bg-fixed bg-cover bg-center py-8"
+  style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZmVkZWZlIi8+PC9zdmc+');">
+  <div class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 pointer-events-none"></div>
+  <div class="relative max-w-6xl mx-auto px-4">
+    <h2 class="text-2xl md:text-3xl font-bold text-pink-700 dark:text-pink-300 mb-4 drop-shadow-lg">Comida</h2>
+    <ng-container *ngIf="getProductosPorCategoria('comida').length > 0; else sinComida">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article *ngFor="let producto of getProductosPorCategoria('comida')"
+          class="relative bg-white/90 dark:bg-gray-900/80 rounded-2xl shadow p-4 border-2 border-pink-100 dark:border-pink-900 hover:scale-105 transition">
+          <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ producto.nombre }}</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm mb-1 truncate">{{ producto.descripcion || 'Sin descripción.' }}</p>
+          <p class="text-gray-900 dark:text-gray-100 font-bold text-lg">{{ producto.precio }}€</p>
+          <div class="flex flex-wrap gap-1 mt-2">
+            <span *ngFor="let al of producto.alergenos" class="bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-200 px-2 py-0.5 rounded text-xs">{{ al }}</span>
+          </div>
+          <button *ngIf="puedeEditar()" (click)="verDetalles(producto)"
+            class="absolute bottom-4 right-4 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition">
+            Ver más
+          </button>
+        </article>
+      </div>
+    </ng-container>
+    <ng-template #sinComida>
+      <p class="text-center text-gray-500 mt-10">No hay comidas disponibles.</p>
+    </ng-template>
+  </div>
+</section>
+
+<!-- Helado -->
+<section id="helado"
+  class="parallax-section relative bg-fixed bg-cover bg-center py-8"
+  style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZmZmN2QwIi8+PC9zdmc+');">
+  <div class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 pointer-events-none"></div>
+  <div class="relative max-w-6xl mx-auto px-4">
+    <h2 class="text-2xl md:text-3xl font-bold text-yellow-700 dark:text-yellow-300 mb-4 drop-shadow-lg">Helado</h2>
+    <ng-container *ngIf="getProductosPorCategoria('helado').length > 0; else sinHelado">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article *ngFor="let producto of getProductosPorCategoria('helado')"
+          class="relative bg-white/90 dark:bg-gray-900/80 rounded-2xl shadow p-4 border-2 border-yellow-100 dark:border-yellow-900 hover:scale-105 transition">
+          <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ producto.nombre }}</h3>
+          <p class="text-gray-600 dark:text-gray-300 text-sm mb-1 truncate">{{ producto.descripcion || 'Sin descripción.' }}</p>
+          <p class="text-gray-900 dark:text-gray-100 font-bold text-lg">{{ producto.precio }}€</p>
+          <div class="flex flex-wrap gap-1 mt-2">
+            <span *ngFor="let al of producto.alergenos" class="bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200 px-2 py-0.5 rounded text-xs">{{ al }}</span>
+          </div>
+          <button *ngIf="puedeEditar()" (click)="verDetalles(producto)"
+            class="absolute bottom-4 right-4 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition">
+            Ver más
+          </button>
+        </article>
+      </div>
+    </ng-container>
+    <ng-template #sinHelado>
+      <p class="text-center text-gray-500 mt-10">No hay helados disponibles.</p>
+    </ng-template>
+  </div>
+</section>
+
+
+  <!-- Modal para añadir producto -->
+  <div *ngIf="mostrarFormularioNuevo" class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/20">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-md relative">
+      <button (click)="mostrarFormularioNuevo = false"
+        class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
+      <h2 class="text-xl font-semibold mb-4">Nuevo Producto</h2>
+      <form (ngSubmit)="anadirProducto(nuevoProducto)">
+        <label class="block mb-2">
+          Nombre:
+          <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nombre" required class="w-full border rounded px-2 py-1 mt-1" />
+        </label>
+        <label class="block mb-2">
+          Descripción:
+          <textarea [(ngModel)]="nuevoProducto.descripcion" name="descripcion" class="w-full border rounded px-2 py-1 mt-1"></textarea>
+        </label>
+        <label class="block mb-2">
+          Precio:
+          <input type="number" [(ngModel)]="nuevoProducto.precio" name="precio" required class="w-full border rounded px-2 py-1 mt-1" />
+        </label>
+        <div class="flex gap-2 mt-4">
+          <button type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Añadir</button>
+          <button type="button" (click)="mostrarFormularioNuevo = false"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded shadow">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Modal editable con formulario -->
   <div *ngIf="productoSeleccionado && puedeEditar()"
@@ -63,3 +197,4 @@
     </form>
   </div>
 </div>
+

@@ -4,9 +4,14 @@
 
 <div *ngIf="!cargando" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
     <div *ngFor="let mesa of mesas" (click)="irAMesa(mesa)"
-        class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition border cursor-pointer">
+        [ngClass]="getMesaColorClass(mesa)"
+        class="rounded-xl shadow hover:shadow-lg p-4 transition border cursor-pointer">
         <h2 class="text-lg font-semibold">{{ mesa.nombre }}</h2>
         <p class="text-sm text-gray-500 mt-1">Estado: {{ mesa.estado }}</p>
+        <ng-container *ngIf="mesa.estado === 'En preparación'">
+            <p class="text-xs text-yellow-900 mt-1">En preparación desde hace {{ mesa.tiempoEnPreparacion }} min
+            </p>
+        </ng-container>
     </div>
 
     <div (click)="abrirSelectorTipoMesa()"

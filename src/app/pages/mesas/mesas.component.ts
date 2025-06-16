@@ -141,31 +141,58 @@ export class MesasComponent implements OnInit {
       .then(data => {
         const todasMesas = data.datos || {};
 
-        const calcularEstadoMesa = (productos: any[]): string => {
-          if (!productos || productos.length === 0) return 'Libre';
+        const calcularEstadoMesa = (productos: any[]): { estado: string, tiempoEnPreparacion: number } => {
+          if (!productos || productos.length === 0) return { estado: 'Libre', tiempoEnPreparacion: 0 };
 
           const hayEnPreparacion = productos.some(p => p.estado === 'En preparación');
           const todosPreparados = productos.every(p => p.estado === 'Preparado');
 
-          if (hayEnPreparacion) return 'En preparación';
-          if (todosPreparados) return 'Preparada';
+          let tiempoEnPreparacion = 0;
+          if (hayEnPreparacion) {
+            // Busca el producto en preparación más antiguo
+            const productosEnPrep = productos.filter(p => p.estado === 'En preparación' && p.fechaEnPreparacion);
+            if (productosEnPrep.length > 0) {
+              // Suponiendo que p.fechaEnPreparacion es un timestamp o ISO string
+              const minFecha = Math.min(...productosEnPrep.map(p => new Date(p.fechaEnPreparacion).getTime()));
+              tiempoEnPreparacion = Math.floor((Date.now() - minFecha) / 60000); // minutos
+            }
+          }
 
-          return 'Libre';
+          if (hayEnPreparacion) return { estado: 'En preparación', tiempoEnPreparacion };
+          if (todosPreparados) return { estado: 'Preparada', tiempoEnPreparacion: 0 };
+
+          return { estado: 'Libre', tiempoEnPreparacion: 0 };
         };
 
         this.mesasFijas.forEach(m => {
           const mesaFirebase = todasMesas[m.id];
-          m.estado = calcularEstadoMesa(mesaFirebase?.contenido || []);
+          const { estado, tiempoEnPreparacion } = calcularEstadoMesa(mesaFirebase?.contenido || []);
+          m.estado = estado;
+          m.tiempoEnPreparacion = tiempoEnPreparacion;
         });
 
         this.mesasExtras.forEach(m => {
           const mesaFirebase = todasMesas[m.id];
-          m.estado = calcularEstadoMesa(mesaFirebase?.contenido || []);
+          const { estado, tiempoEnPreparacion } = calcularEstadoMesa(mesaFirebase?.contenido || []);
+          m.estado = estado;
+          m.tiempoEnPreparacion = tiempoEnPreparacion;
         });
       });
   }
 
   irAMesa(mesa: any) {
     this.router.navigate(['/mesa', mesa.id]);
+  }
+
+  getMesaColorClass(mesa: any): string {
+    if (mesa.estado === 'Libre') return 'bg-green-100 border-green-600 border-2 ';
+    if (mesa.estado === 'Preparada') return 'bg-blue-100 border-blue-600 border-2 ';
+    if (mesa.estado === 'En preparación') {
+      const min = Math.min(mesa.tiempoEnPreparacion || 0, 2);
+      if (min < 1) return 'bg-yellow-100 border-yellow-500 border-2 ';   // suave
+      if (min < 2) return 'bg-yellow-300 border-yellow-600 border-2 ';   // medio
+      return 'bg-yellow-400 border-yellow-700 border-2 ';                // intenso
+    }
+    return 'bg-gray-100 border-gray-400 border-2 ';
   }
 }

@@ -37,6 +37,13 @@ export class CartaComponent implements OnInit {
   };
 
   categoriasDisponibles: string[] = [];
+  productosFiltrados: any[] = [];
+  alergenosDisponibles: string[] = [];
+  alergenoSeleccionado: string = '';
+  alergenosSeleccionados: string[] = [];
+  categoriasSeleccionadas: string[] = [];
+
+  productos: any[] = [];
 
   anadirProducto(producto: {
     nombre: string;
@@ -201,5 +208,83 @@ export class CartaComponent implements OnInit {
       },
       error: err => console.error('Error al cargar categorías', err)
     });
+
+    // Cargar productos y extraer alérgenos únicos
+    this.productos$.subscribe(productos => {
+      this.productos = productos;
+      this.filtrarProductos();
+      const alergenosSet = new Set<string>();
+      productos.forEach((p: any) => {
+        if (Array.isArray(p.alergenos)) {
+          p.alergenos.forEach((a: string) => alergenosSet.add(a));
+        }
+      });
+      this.alergenosDisponibles = Array.from(alergenosSet).sort();
+    });
+  }
+
+  filtrarPorAlergeno() {
+    this.productos$.subscribe(productos => {
+      if (!this.alergenosSeleccionados.length) {
+        this.productosFiltrados = productos;
+      } else {
+        this.productosFiltrados = productos.filter((p: any) =>
+          Array.isArray(p.alergenos) && p.alergenos.some((al: string) => this.alergenosSeleccionados.includes(al))
+        );
+      }
+    });
+  }
+
+  toggleAlergeno(alergeno: string, checked: boolean) {
+    if (checked) {
+      if (!this.alergenosSeleccionados.includes(alergeno)) {
+        this.alergenosSeleccionados.push(alergeno);
+      }
+    } else {
+      this.alergenosSeleccionados = this.alergenosSeleccionados.filter(a => a !== alergeno);
+    }
+    this.filtrarPorAlergeno();
+  }
+
+  limpiarAlergenos() {
+    this.alergenosSeleccionados = [];
+    this.filtrarPorAlergeno();
+  }
+
+  onAlergenoCheckboxChange(event: Event, alergeno: string) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.toggleAlergeno(alergeno, checked);
+  }
+
+  onCategoriaCheckboxChange(event: Event, categoria: string) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      if (!this.categoriasSeleccionadas.includes(categoria)) {
+        this.categoriasSeleccionadas.push(categoria);
+      }
+    } else {
+      this.categoriasSeleccionadas = this.categoriasSeleccionadas.filter(c => c !== categoria);
+    }
+    this.filtrarProductos();
+  }
+
+  limpiarCategorias() {
+    this.categoriasSeleccionadas = [];
+    this.filtrarProductos();
+  }
+
+  // Modifica tu método de filtrado para tener en cuenta categorías y alérgenos
+  filtrarProductos() {
+    this.productosFiltrados = this.productos.filter((producto: any) => {
+      const pasaAlergenos = this.alergenosSeleccionados.length === 0 ||
+        (producto.alergenos && producto.alergenos.some((a: string) => this.alergenosSeleccionados.includes(a)));
+      const pasaCategorias = this.categoriasSeleccionadas.length === 0 ||
+        (producto.categoria && this.categoriasSeleccionadas.includes(producto.categoria));
+      return pasaAlergenos && pasaCategorias;
+    });
+  }
+
+  getProductosPorCategoria(categoria: string): any[] {
+    return this.productosFiltrados.filter(p => p.categoria?.toLowerCase() === categoria.toLowerCase());
   }
 }

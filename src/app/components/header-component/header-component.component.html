@@ -1,12 +1,15 @@
 <header
-  class="bg-blue-600 dark:bg-gray-900 text-white p-4 flex justify-between items-center shadow-md transition-all duration-300"
+  class="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-700 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white px-4 py-3 flex justify-between items-center shadow-md transition-all duration-300"
 >
-  <span class="text-xl font-bold">La Calica</span>
+  <div class="flex items-center gap-3">
+    <span class="text-2xl font-bold tracking-tight drop-shadow">La Calica</span>
+  </div>
 
   <button
     (click)="toggleDarkMode()"
-    class="p-2 rounded bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
+    class="p-2 rounded-full bg-white/20 hover:bg-white/40 dark:bg-gray-700 dark:hover:bg-gray-600 text-white transition flex items-center justify-center shadow"
+    [attr.aria-label]="isDarkMode ? 'Desactivar modo oscuro' : 'Activar modo oscuro'"
   >
-    <lucide-icon name="my-icon" [img]="moon" class="w-5 h-5"></lucide-icon>
+    <lucide-icon [img]="moon" class="w-6 h-6"></lucide-icon>
   </button>
 </header>
