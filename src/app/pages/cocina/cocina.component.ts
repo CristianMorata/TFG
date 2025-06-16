@@ -51,30 +51,31 @@ export class CocinaComponent implements OnInit {
 
   categoriasConDestino: Record<string, { destino: string }> = {};
 
-  constructor(private servicios: ServiciosService, private authService: AuthService, private router: Router) {
-    // Obtenemos el usuario y su tipo
-    this.authService.user$.subscribe(user => {
-      this.usuario = user;
-
-      if (user) {
-        this.authService.getUserRole(user.uid).then(tipo => {
-          this.tipoUsuario = tipo;
-          console.log('Tipo de usuario:', this.tipoUsuario);
-
-          // Verificar si el usuario es permitido en la página
-          if (this.tipoUsuario !== 'admin' && this.tipoUsuario !== 'empleado') {
-            this.router.navigate(['/carta']);
-          }
-        });
-      } else {
-        this.router.navigate(['/carta']);
-      }
-    });
-  }
+  constructor(private servicios: ServiciosService, private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    this.cargarCategorias(() => {
-      this.recargar();
+    this.authService.user$.subscribe(user => {
+      if (!user) return; // Aún no se ha cargado el usuario
+
+      this.usuario = user;
+
+      this.authService.getUserRole(user.uid).then(tipo => {
+        this.tipoUsuario = tipo;
+        console.log('Tipo de usuario:', this.tipoUsuario);
+
+        if (tipo !== 'admin' && tipo !== 'empleado') {
+          this.router.navigate(['/carta']);
+          return;
+        }
+
+        // Si tiene permiso, cargamos la información
+        this.cargarCategorias(() => {
+          this.recargar();
+        });
+      }).catch(err => {
+        console.error('Error al obtener el rol del usuario:', err);
+        this.router.navigate(['/carta']);
+      });
     });
   }
 

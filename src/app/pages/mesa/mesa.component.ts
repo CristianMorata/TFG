@@ -299,4 +299,46 @@ export class MesaComponent {
 
     this.mostrarPopupCierre = false;
   }
+
+  // Metodo botones solicitudes clientes
+  mostrarPopupMetodoPago: boolean = false;
+  metodoPagoSolicitado: string = '';
+
+  llamarCamarero() {
+    if (!this.mesaId) return;
+
+    this.service.actualizarLlamadaOCuenta(this.mesaId, true, null).subscribe({
+      next: () => alert('Camarero llamado correctamente'),
+      error: err => {
+        console.error('Error al llamar camarero:', err);
+        alert('Error al llamar al camarero');
+      }
+    });
+  }
+
+  abrirPopupPedirCuenta() {
+    this.metodoPagoSolicitado = '';
+    this.mostrarPopupMetodoPago = true;
+  }
+
+  confirmarPedirCuenta() {
+    if (!this.metodoPagoSolicitado || !this.mesaId) return;
+
+    const estructura = {
+      efectivo: this.metodoPagoSolicitado === 'Efectivo',
+      tarjeta: this.metodoPagoSolicitado === 'Tarjeta',
+      ambos: this.metodoPagoSolicitado === 'Ambos'
+    };
+
+    this.service.actualizarLlamadaOCuenta(this.mesaId, null, estructura).subscribe({
+      next: () => {
+        alert('Se ha solicitado la cuenta correctamente');
+        this.mostrarPopupMetodoPago = false;
+      },
+      error: err => {
+        console.error('Error al solicitar la cuenta:', err);
+        alert('Error al solicitar la cuenta');
+      }
+    });
+  }
 }

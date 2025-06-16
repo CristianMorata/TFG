@@ -100,4 +100,18 @@ export class ServiciosService {
     return this.http.get<any>('https://obteneralergenos-rs2gjhs4iq-uc.a.run.app')
       .pipe(map(res => Object.keys(res.alergenos || {})));
   }
+
+  actualizarLlamadaOCuenta(mesaId: string, llamarCamarero: boolean | null, pedirCuenta: { efectivo: boolean, tarjeta: boolean, ambos: boolean } | null) {
+    const body: any = { mesaId };
+
+    if (llamarCamarero !== null) {
+      body.llamarCamarero = llamarCamarero;
+    }
+
+    if (pedirCuenta !== null) {
+      body.pedirCuenta = pedirCuenta;
+    }
+
+    return this.http.post('https://actualizarllamadaocuenta-rs2gjhs4iq-uc.a.run.app', body);
+  }
 }

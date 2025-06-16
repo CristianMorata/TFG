@@ -1,8 +1,41 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-2">
+<div
+  class="min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-2">
   <div class="max-w-3xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8 text-center text-blue-700 dark:text-blue-300 flex items-center justify-center gap-2 drop-shadow">
+    <!-- Zona para msotrar toast de solicitudes pendientes -->
+    <div *ngIf="avisosActivos.length > 0"
+      class="mb-8 bg-yellow-100 border border-yellow-400 text-yellow-900 p-4 rounded-lg shadow">
+      <h2 class="font-bold text-lg mb-2">Solicitudes pendientes</h2>
+
+      <div *ngFor="let grupo of avisosAgrupadosPorMesa()" class="mb-4">
+        <h3 class="font-semibold mb-1">Mesa {{ grupo.mesaId }}</h3>
+        <ul>
+          <li *ngFor="let aviso of grupo.avisos" class="flex justify-between items-center mb-1">
+            <span>
+              {{ aviso.tipo === 'camarero' ? 'Solicita camarero' : 'Solicita cuenta con ' + aviso.metodo }}
+            </span>
+            <button (click)="confirmarSolicitud(aviso.mesaId, aviso.tipo)"
+              class="ml-4 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+              Confirmar
+            </button>
+          </li>
+        </ul>
+        <button (click)="confirmarSolicitudesPorMesa(grupo.mesaId)"
+          class="mt-1 px-4 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm font-medium shadow">
+          Confirmar todas las de esta mesa
+        </button>
+      </div>
+
+      <button (click)="confirmarTodas()"
+        class="mt-2 px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 text-sm">
+        Confirmar todas
+      </button>
+    </div>
+
+    <h1
+      class="text-3xl font-bold mb-8 text-center text-blue-700 dark:text-blue-300 flex items-center justify-center gap-2 drop-shadow">
       <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8M12 17v4m-6-4a6 6 0 1112 0v4H6v-4zM12 3v4m0 0a4 4 0 100 8 4 4 0 000-8z" />
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M8 21h8M12 17v4m-6-4a6 6 0 1112 0v4H6v-4zM12 3v4m0 0a4 4 0 100 8 4 4 0 000-8z" />
       </svg>
       Barra - Bebidas en preparación
     </h1>
@@ -10,8 +43,8 @@
     <ng-container *ngIf="cargando">
       <div class="flex justify-center items-center py-12">
         <svg class="animate-spin h-8 w-8 text-blue-500 mr-2" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
         <span class="text-blue-700 dark:text-blue-200 text-lg">Cargando bebidas...</span>
       </div>
@@ -25,19 +58,22 @@
 
     <ng-container *ngIf="!cargando && !error && mesasConBebidas.length === 0">
       <div class="text-center py-10 text-gray-500 dark:text-gray-400 text-lg">
-        <svg class="mx-auto mb-2 w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8M12 17v4m-6-4a6 6 0 1112 0v4H6v-4zM12 3v4m0 0a4 4 0 100 8 4 4 0 000-8z" />
+        <svg class="mx-auto mb-2 w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor"
+          stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M8 21h8M12 17v4m-6-4a6 6 0 1112 0v4H6v-4zM12 3v4m0 0a4 4 0 100 8 4 4 0 000-8z" />
         </svg>
         No hay bebidas pendientes.
       </div>
     </ng-container>
 
     <ng-container *ngFor="let mesa of mesasConBebidas">
-      <section class="mb-8 p-6 border-2 border-blue-200 dark:border-blue-800 rounded-2xl bg-white/80 dark:bg-gray-800/80 shadow-lg transition-all">
+      <section
+        class="mb-8 p-6 border-2 border-blue-200 dark:border-blue-800 rounded-2xl bg-white/80 dark:bg-gray-800/80 shadow-lg transition-all">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-200 flex items-center gap-2">
             <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
               <text x="12" y="16" text-anchor="middle" font-size="10" fill="currentColor">{{ mesa.mesaId }}</text>
             </svg>
             Mesa #{{ mesa.mesaId }}
@@ -52,10 +88,10 @@
         </div>
 
         <ul class="divide-y divide-blue-100 dark:divide-blue-900">
-          <li *ngFor="let bebida of mesa.bebidas; let i = index"
-            class="flex justify-between items-center py-3">
+          <li *ngFor="let bebida of mesa.bebidas; let i = index" class="flex justify-between items-center py-3">
             <div class="flex items-center gap-3">
-              <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a4 4 0 014-4h2a4 4 0 014 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>

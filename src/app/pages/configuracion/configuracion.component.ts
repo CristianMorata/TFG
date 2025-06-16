@@ -18,36 +18,33 @@ export class ConfiguracionComponent implements OnInit {
   cargando = true;
   error: string | null = null;
 
-  constructor(private configuracionService: ConfiguracionService, private authService: AuthService, private router: Router) {
-    // Obtenemos el usuario y su tipo
-    this.authService.user$.subscribe(user => {
-      this.usuario = user;
-
-      if (user) {
-        this.authService.getUserRole(user.uid).then(tipo => {
-          this.tipoUsuario = tipo;
-          console.log('Tipo de usuario:', this.tipoUsuario);
-
-          // Verificar si el usuario es permitido en la página
-          if (this.tipoUsuario !== 'admin') {
-            this.router.navigate(['/carta']);
-          }
-        });
-      } else {
-        this.router.navigate(['/carta']);
-      }
-    });
-  }
+  constructor(
+    private configuracionService: ConfiguracionService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     // Obtener el usuario y su tipo
     this.authService.user$.subscribe(user => {
+      if (!user) return; // Esperamos al usuario
+
       this.usuario = user;
-      if (user) {
-        this.authService.getUserRole(user.uid).then(tipo => {
-          this.tipoUsuario = tipo;
-        });
-      }
+
+      this.authService.getUserRole(user.uid).then(tipo => {
+        this.tipoUsuario = tipo;
+
+        if (tipo !== 'admin') {
+          this.router.navigate(['/carta']);
+          return;
+        }
+
+        // Solo si es admin, cargamos la configuración
+        this.cargarTodo();
+      }).catch(err => {
+        console.error('Error al obtener el rol del usuario:', err);
+        this.router.navigate(['/carta']);
+      });
     });
 
     // Cargar configuración al iniciar
@@ -87,6 +84,31 @@ export class ConfiguracionComponent implements OnInit {
           this.cargando = false;
         }
       });
+  }
+
+  //  Manejo de redirecionamiento por rol
+  private cargarTodo(): void {
+    this.configuracionService.getConfiguracion().subscribe({
+      next: (data) => {
+        this.servicioCamarero = data.anadirProductosCamarero;
+        this.servicioCliente = data.anadirProductosClientes;
+        this.cargando = false;
+      },
+      error: () => {
+        this.error = 'No se pudo cargar la configuración.';
+        this.cargando = false;
+      }
+    });
+
+    this.configuracionService.getCategorias().subscribe({
+      next: (data) => this.categorias = data.categorias,
+      error: () => this.error = 'No se pudieron cargar las categorías.'
+    });
+
+    this.configuracionService.getAlergenos().subscribe({
+      next: (data) => this.alergenos = data.alergenos,
+      error: () => this.error = 'No se pudieron cargar los alérgenos.'
+    });
   }
 
   // Manejo de categorías
@@ -195,9 +217,9 @@ export class ConfiguracionComponent implements OnInit {
     if (!confirm(`¿Eliminar el alérgeno "${nombre}"?`)) return;
 
     this.configuracionService.eliminarAlergeno(nombre).subscribe({
-      next: () => { 
+      next: () => {
         delete this.alergenos[nombre],
-        this.cerrarPopupAlergeno();
+          this.cerrarPopupAlergeno();
       },
       error: () => this.error = 'Error al eliminar el alérgeno.'
     });

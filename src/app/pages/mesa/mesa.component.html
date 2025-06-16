@@ -1,10 +1,11 @@
-<div class="min-h-screen bg-gradient-to-br from-green-50 via-yellow-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-2">
+<div
+  class="min-h-screen bg-gradient-to-br from-green-50 via-yellow-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 px-2">
   <div class="max-w-4xl mx-auto">
     <!-- Cabecera -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex flex-col gap-2 mb-4">
       <h1 class="text-3xl font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2">
         <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" stroke-width="0.3" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
           <text x="12" y="16" text-anchor="middle" font-size="10" fill="currentColor">{{ mesaId }}</text>
         </svg>
         Mesa {{ mesaId }}
@@ -18,7 +19,8 @@
     <div *ngIf="mesaExiste && mesaContenidoExistente.length > 0" class="mb-6">
       <h2 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">Contenido actual de la mesa:</h2>
       <ul class="divide-y divide-gray-200 dark:divide-gray-700 rounded-lg bg-white/80 dark:bg-gray-800/80 shadow">
-        <li *ngFor="let p of mesaContenidoExistente; let i = index" class="p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+        <li *ngFor="let p of mesaContenidoExistente; let i = index"
+          class="p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <span class="font-semibold text-blue-700 dark:text-blue-200">{{ p.nombre }}</span>
             <span class="text-gray-600 dark:text-gray-300">- {{ p.precio | currency }}</span>
@@ -27,10 +29,12 @@
             <div *ngIf="p.anotacion" class="text-sm italic text-gray-500">Anotación: {{ p.anotacion }}</div>
           </div>
           <div *ngIf="modoEdicion" class="flex gap-2 mt-2 md:mt-0">
-            <button (click)="abrirPopupEditarProducto(p, i)" class="flex items-center gap-1 px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded shadow text-sm">
+            <button (click)="abrirPopupEditarProducto(p, i)"
+              class="flex items-center gap-1 px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded shadow text-sm">
               📝 Editar
             </button>
-            <button (click)="eliminarProducto(i)" class="flex items-center gap-1 px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded shadow text-sm">
+            <button (click)="eliminarProducto(i)"
+              class="flex items-center gap-1 px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded shadow text-sm">
               🗑️ Eliminar
             </button>
           </div>
@@ -59,6 +63,15 @@
         class="flex-1 min-w-[120px] bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition font-semibold">
         Cerrar mesa
       </button>
+      <button *ngIf="mesaExiste" (click)="llamarCamarero()"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow font-semibold">
+        Llamar camarero
+      </button>
+
+      <button *ngIf="mesaExiste" (click)="abrirPopupPedirCuenta()"
+        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg shadow font-semibold">
+        Pedir cuenta
+      </button>
     </div>
 
     <!-- Productos añadidos sin guardar -->
@@ -86,7 +99,8 @@
   <!-- Popup selección de productos -->
   <div *ngIf="mostrarPopupProductos"
     class="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
       <button (click)="cerrarPopupProductos()"
         class="absolute top-2 right-2 text-2xl text-gray-400 hover:text-black dark:hover:text-white">&times;</button>
       <h2 class="text-2xl font-bold mb-4 text-blue-700 dark:text-blue-200">Seleccionar productos</h2>
@@ -113,7 +127,8 @@
       </ng-template>
       <!-- Anotaciones generales -->
       <div class="mt-4">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Anotaciones generales (opcional):</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Anotaciones generales
+          (opcional):</label>
         <textarea [(ngModel)]="anotaciones" rows="3"
           class="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
           placeholder="Ej. sin cebolla, muy hecho, etc."></textarea>
@@ -136,13 +151,17 @@
         class="absolute top-2 right-2 text-2xl text-gray-400 hover:text-black dark:hover:text-white">&times;</button>
       <h2 class="text-xl font-bold mb-4 text-blue-700 dark:text-blue-200">Editar producto</h2>
       <label class="block mb-2 text-sm">Nombre</label>
-      <input [(ngModel)]="productoEditando.nombre" class="w-full border rounded p-2 mb-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100" />
+      <input [(ngModel)]="productoEditando.nombre"
+        class="w-full border rounded p-2 mb-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100" />
       <label class="block mb-2 text-sm">Precio</label>
-      <input [(ngModel)]="productoEditando.precio" type="number" class="w-full border rounded p-2 mb-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100" />
+      <input [(ngModel)]="productoEditando.precio" type="number"
+        class="w-full border rounded p-2 mb-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100" />
       <label class="block mb-2 text-sm">Anotación</label>
-      <textarea [(ngModel)]="productoEditando.anotacion" class="w-full border rounded p-2 mb-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"></textarea>
+      <textarea [(ngModel)]="productoEditando.anotacion"
+        class="w-full border rounded p-2 mb-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"></textarea>
       <div class="text-right">
-        <button (click)="guardarEdicionProducto()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">
+        <button (click)="guardarEdicionProducto()"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">
           Guardar cambios
         </button>
       </div>
@@ -159,24 +178,53 @@
       <div class="mb-3">
         <label class="font-medium">Método de pago:</label>
         <div class="mt-1 space-y-1">
-          <label class="flex items-center gap-2"><input type="radio" [(ngModel)]="opcionPagoSeleccionada" value="Efectivo"> Efectivo</label>
-          <label class="flex items-center gap-2"><input type="radio" [(ngModel)]="opcionPagoSeleccionada" value="Tarjeta"> Tarjeta</label>
-          <label class="flex items-center gap-2"><input type="radio" [(ngModel)]="opcionPagoSeleccionada" value="Ambos"> Ambos</label>
+          <label class="flex items-center gap-2"><input type="radio" [(ngModel)]="opcionPagoSeleccionada"
+              value="Efectivo"> Efectivo</label>
+          <label class="flex items-center gap-2"><input type="radio" [(ngModel)]="opcionPagoSeleccionada"
+              value="Tarjeta"> Tarjeta</label>
+          <label class="flex items-center gap-2"><input type="radio" [(ngModel)]="opcionPagoSeleccionada" value="Ambos">
+            Ambos</label>
         </div>
       </div>
       <div *ngIf="opcionPagoSeleccionada === 'Ambos'" class="mb-4">
         <label class="block text-sm mb-1">Cantidad en efectivo:</label>
-        <input type="text" [(ngModel)]="pagoEfectivo" class="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
+        <input type="text" [(ngModel)]="pagoEfectivo"
+          class="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
         <label class="block text-sm mt-2 mb-1">Cantidad con tarjeta:</label>
-        <input type="text" [(ngModel)]="pagoTarjeta" class="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
+        <input type="text" [(ngModel)]="pagoTarjeta"
+          class="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
       </div>
       <div class="mt-6 text-right">
-        <button (click)="confirmarCerrarMesa()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold">
+        <button (click)="confirmarCerrarMesa()"
+          class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold">
           Confirmar cierre
         </button>
       </div>
       <div *ngIf="mensajeErrorCierre" class="text-red-600 text-sm mb-3">
         {{ mensajeErrorCierre }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup método de pago para pedir cuenta -->
+  <div *ngIf="mostrarPopupMetodoPago" class="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 w-full max-w-sm relative">
+      <button (click)="mostrarPopupMetodoPago = false"
+        class="absolute top-2 right-2 text-2xl text-gray-400 hover:text-black dark:hover:text-white">&times;</button>
+      <h2 class="text-lg font-bold mb-4 text-purple-700 dark:text-purple-200">¿Cómo desea pagar?</h2>
+      <div class="space-y-2">
+        <label class="flex items-center gap-2"><input type="radio" [(ngModel)]="metodoPagoSolicitado" value="Efectivo">
+          Efectivo</label>
+        <label class="flex items-center gap-2"><input type="radio" [(ngModel)]="metodoPagoSolicitado" value="Tarjeta">
+          Tarjeta</label>
+        <label class="flex items-center gap-2"><input type="radio" [(ngModel)]="metodoPagoSolicitado" value="Ambos">
+          Ambos</label>
+      </div>
+      <div class="mt-6 text-right">
+        <button (click)="confirmarPedirCuenta()"
+          class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-semibold">
+          Confirmar
+        </button>
       </div>
     </div>
   </div>

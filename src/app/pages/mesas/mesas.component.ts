@@ -24,29 +24,30 @@ export class MesasComponent implements OnInit {
 
   cargando = true;
 
-  constructor(private authService: AuthService, private router: Router) {
-    // Obtenemos el usuario y su tipo
-    this.authService.user$.subscribe(user => {
-      this.usuario = user;
-
-      if (user) {
-        this.authService.getUserRole(user.uid).then(tipo => {
-          this.tipoUsuario = tipo;
-          console.log('Tipo de usuario:', this.tipoUsuario);
-
-          // Verificar si el usuario es permitido en la página
-          if (this.tipoUsuario !== 'admin' && this.tipoUsuario !== 'empleado') {
-            this.router.navigate(['/carta']); // o donde tú decidas
-          }
-        });
-      } else {
-        this.router.navigate(['/carta']);
-      }
-    });
-  }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
-    this.inicializarMesas();
+    this.authService.user$.subscribe(user => {
+      if (!user) return; // Aún no cargó el usuario
+
+      this.usuario = user;
+
+      this.authService.getUserRole(user.uid).then(tipo => {
+        this.tipoUsuario = tipo;
+        console.log('Tipo de usuario:', this.tipoUsuario);
+
+        if (tipo !== 'admin' && tipo !== 'empleado') {
+          this.router.navigate(['/carta']);
+          return;
+        }
+
+        // Si es admin o empleado, inicializamos las mesas
+        this.inicializarMesas();
+      }).catch(err => {
+        console.error('Error al obtener el rol del usuario:', err);
+        this.router.navigate(['/carta']);
+      });
+    });
   }
 
   async inicializarMesas() {
@@ -148,7 +149,7 @@ export class MesasComponent implements OnInit {
           const todosPreparados = productos.every(p => p.estado === 'Preparado');
 
           let tiempoEnPreparacion = 0;
-          if (hayEnPreparacion) {   
+          if (hayEnPreparacion) {
             // Busca el producto en preparación más antiguo
             const productosEnPrep = productos.filter(p => p.estado === 'En preparación' && p.fechaEnPreparacion);
             if (productosEnPrep.length > 0) {
