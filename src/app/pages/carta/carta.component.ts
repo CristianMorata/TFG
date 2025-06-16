@@ -221,18 +221,18 @@ export class CartaComponent implements OnInit {
       });
       this.alergenosDisponibles = Array.from(alergenosSet).sort();
     });
+
+    // Cargar alergernos al iniciar
+    this.service.getAlergenosDisponibles().subscribe({
+      next: (alergenos) => {
+        this.alergenosDisponibles = alergenos;
+      },
+      error: err => console.error('Error al cargar alérgenos disponibles', err)
+    });
   }
 
-  filtrarPorAlergeno() {
-    this.productos$.subscribe(productos => {
-      if (!this.alergenosSeleccionados.length) {
-        this.productosFiltrados = productos;
-      } else {
-        this.productosFiltrados = productos.filter((p: any) =>
-          Array.isArray(p.alergenos) && p.alergenos.some((al: string) => this.alergenosSeleccionados.includes(al))
-        );
-      }
-    });
+  limpiarAlergenos() {
+    this.alergenosSeleccionados = [];
   }
 
   toggleAlergeno(alergeno: string, checked: boolean) {
@@ -243,12 +243,9 @@ export class CartaComponent implements OnInit {
     } else {
       this.alergenosSeleccionados = this.alergenosSeleccionados.filter(a => a !== alergeno);
     }
-    this.filtrarPorAlergeno();
-  }
 
-  limpiarAlergenos() {
-    this.alergenosSeleccionados = [];
-    this.filtrarPorAlergeno();
+    // ✅ Usar el filtro correcto
+    this.filtrarProductos();
   }
 
   onAlergenoCheckboxChange(event: Event, alergeno: string) {
@@ -273,18 +270,58 @@ export class CartaComponent implements OnInit {
     this.filtrarProductos();
   }
 
-  // Modifica tu método de filtrado para tener en cuenta categorías y alérgenos
   filtrarProductos() {
     this.productosFiltrados = this.productos.filter((producto: any) => {
       const pasaAlergenos = this.alergenosSeleccionados.length === 0 ||
-        (producto.alergenos && producto.alergenos.some((a: string) => this.alergenosSeleccionados.includes(a)));
+        !producto.alergenos?.some((a: string) => this.alergenosSeleccionados.includes(a));
+
       const pasaCategorias = this.categoriasSeleccionadas.length === 0 ||
         (producto.categoria && this.categoriasSeleccionadas.includes(producto.categoria));
+
       return pasaAlergenos && pasaCategorias;
     });
   }
 
   getProductosPorCategoria(categoria: string): any[] {
     return this.productosFiltrados.filter(p => p.categoria?.toLowerCase() === categoria.toLowerCase());
+  }
+
+  // Control de alergenos
+  toggleAlergenoNuevoProducto(alergeno: string, checked: boolean) {
+    const alergenos = this.nuevoProducto.alergenos;
+    if (checked && !alergenos.includes(alergeno)) {
+      alergenos.push(alergeno);
+    } else if (!checked) {
+      this.nuevoProducto.alergenos = alergenos.filter((a: string) => a !== alergeno);
+    }
+  }
+
+  toggleAlergenoEditable(alergeno: string, checked: boolean) {
+    if (!this.productoEditable.alergenos) {
+      this.productoEditable.alergenos = [];
+    }
+
+    if (checked && !this.productoEditable.alergenos.includes(alergeno)) {
+      this.productoEditable.alergenos.push(alergeno);
+    } else if (!checked) {
+      this.productoEditable.alergenos = this.productoEditable.alergenos.filter((a: string) => a !== alergeno);
+    }
+  }
+
+  onAlergenoCheckboxChangeNuevo(event: Event, alergeno: string) {
+    const input = event.target as HTMLInputElement;
+    const checked = input.checked;
+
+    if (checked && !this.nuevoProducto.alergenos.includes(alergeno)) {
+      this.nuevoProducto.alergenos.push(alergeno);
+    } else if (!checked) {
+      this.nuevoProducto.alergenos = this.nuevoProducto.alergenos.filter((a: string) => a !== alergeno);
+    }
+  }
+
+  onAlergenoCheckboxChangeEditable(event: Event, alergeno: string) {
+    const input = event.target as HTMLInputElement;
+    const checked = input.checked;
+    this.toggleAlergenoEditable(alergeno, checked);
   }
 }
