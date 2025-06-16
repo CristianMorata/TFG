@@ -48,105 +48,17 @@
 
       <div>
         <label class="block text-sm font-medium text-gray-700">Descripción</label>
-        <textarea [(ngModel)]="productoEditable.descripcion" name="descripcion"
-          class="w-full border rounded-lg p-2 mt-1"></textarea>
+        <textarea [(ngModel)]="productoEditable.descripcion" name="descripcion" class="w-full border rounded-lg p-2 mt-1"></textarea>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Precio (€)</label>
-        <input type="number" [(ngModel)]="productoEditable.precio" name="precio"
-          class="w-full border rounded-lg p-2 mt-1" required />
+        <label class="block text-sm font-medium text-gray-700">Precio</label>
+        <input type="number" [(ngModel)]="productoEditable.precio" name="precio" class="w-full border rounded-lg p-2 mt-1" required />
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Categoría</label>
-        <select [(ngModel)]="productoEditable.categoria" name="categoria" class="w-full border rounded-lg p-2 mt-1"
-          required>
-          <option *ngFor="let cat of categoriasDisponibles" [value]="cat">{{ cat }}</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Alérgenos (coma separados)</label>
-        <input type="text" [(ngModel)]="productoEditable.alergenos" name="alergenos"
-          class="w-full border rounded-lg p-2 mt-1" />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Anotaciones</label>
-        <textarea [(ngModel)]="productoEditable.anotaciones" name="anotaciones"
-          class="w-full border rounded-lg p-2 mt-1"></textarea>
-      </div>
-
-      <div class="flex gap-4">
-        <label class="inline-flex items-center">
-          <input type="checkbox" [(ngModel)]="productoEditable.visible" name="visible" class="mr-2">
-          Visible
-        </label>
-        <label class="inline-flex items-center">
-          <input type="checkbox" [(ngModel)]="productoEditable.novedad" name="novedad" class="mr-2">
-          Novedad
-        </label>
-      </div>
-
-      <div class="flex justify-between pt-4">
-        <button type="button" (click)="eliminarProducto()"
-          class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-          Eliminar
-        </button>
-
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-          Guardar cambios
-        </button>
-      </div>
-    </form>
-  </div>
-
-  <div *ngIf="mostrarFormularioNuevo"
-    class="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
-    <form (ngSubmit)="anadirProducto(nuevoProducto); mostrarFormularioNuevo = false"
-      class="bg-white/90 rounded-2xl shadow-xl p-6 max-w-lg w-full relative space-y-4">
-      <button type="button" (click)="mostrarFormularioNuevo = false"
-        class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
-
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">Nuevo producto</h2>
-
-      <input type="text" [(ngModel)]="nuevoProducto.nombre" name="nuevo_nombre" required placeholder="Nombre"
-        class="w-full border rounded-lg p-2" />
-
-      <textarea [(ngModel)]="nuevoProducto.descripcion" name="nuevo_descripcion" placeholder="Descripción"
-        class="w-full border rounded-lg p-2"></textarea>
-
-      <input type="number" [(ngModel)]="nuevoProducto.precio" name="nuevo_precio" required placeholder="Precio (€)"
-        class="w-full border rounded-lg p-2" />
-
-      <input type="text" [(ngModel)]="nuevoProducto.tipo_comida" name="nuevo_tipo_comida" placeholder="Tipo de comida"
-        class="w-full border rounded-lg p-2" />
-
-      <select [(ngModel)]="nuevoProducto.categoria" name="nuevo_categoria" class="w-full border rounded-lg p-2"
-        required>
-        <option value="" disabled selected hidden>Selecciona una categoría</option>
-        <option *ngFor="let cat of categoriasDisponibles" [value]="cat">{{ cat }}</option>
-      </select>
-
-      <input type="text" [(ngModel)]="nuevoProducto.alergenos" name="nuevo_alergenos"
-        placeholder="Alérgenos (coma separados)" class="w-full border rounded-lg p-2" />
-
-      <div class="flex gap-4">
-        <label class="inline-flex items-center">
-          <input type="checkbox" [(ngModel)]="nuevoProducto.visible" name="nuevo_visible" class="mr-2">
-          Visible
-        </label>
-        <label class="inline-flex items-center">
-          <input type="checkbox" [(ngModel)]="nuevoProducto.novedad" name="nuevo_novedad" class="mr-2">
-          Novedad
-        </label>
-      </div>
-
-      <div class="flex justify-end pt-4">
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-          Añadir
-        </button>
+      <div class="flex gap-2 justify-end">
+        <button type="button" (click)="cerrarDetalles()" class="px-4 py-2 bg-gray-300 rounded">Cancelar</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Guardar</button>
       </div>
     </form>
   </div>

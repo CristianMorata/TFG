@@ -68,6 +68,12 @@ export class ConfiguracionComponent implements OnInit {
       next: (data) => this.categorias = data.categorias,
       error: () => this.error = 'No se pudieron cargar las categorías.'
     });
+
+    // Cargar alérgenos al iniciar
+    this.configuracionService.getAlergenos().subscribe({
+      next: (data) => this.alergenos = data.alergenos,
+      error: () => this.error = 'No se pudieron cargar los alérgenos.'
+    });
   }
 
   onChange(): void {
@@ -121,6 +127,79 @@ export class ConfiguracionComponent implements OnInit {
         this.cerrarPopup();
       },
       error: () => this.error = 'Error al guardar la categoría.'
+    });
+  }
+
+  // Manejo de alérgenos
+  alergenos: any = {};
+  mostrarPopupAlergeno = false;
+  modoEdicionAlergeno = false;
+  nombreAlergeno = '';
+  nombreAlergenoOriginal = '';
+
+  getAlergenosKeys(): string[] {
+    return Object.keys(this.alergenos || {});
+  }
+
+  abrirPopupAlergeno(nombre?: string): void {
+    if (nombre) {
+      this.modoEdicionAlergeno = true;
+      this.nombreAlergeno = nombre;
+      this.nombreAlergenoOriginal = nombre;
+    } else {
+      this.modoEdicionAlergeno = false;
+      this.nombreAlergeno = '';
+      this.nombreAlergenoOriginal = '';
+    }
+    this.mostrarPopupAlergeno = true;
+  }
+
+  cerrarPopupAlergeno(): void {
+    this.mostrarPopupAlergeno = false;
+  }
+
+  guardarAlergeno(): void {
+    const nombreNuevo = this.nombreAlergeno.trim();
+    const nombreViejo = this.nombreAlergenoOriginal;
+
+    if (!nombreNuevo) return;
+
+    if (this.modoEdicionAlergeno && nombreNuevo !== nombreViejo) {
+      // Eliminar el anterior, luego crear el nuevo
+      this.configuracionService.eliminarAlergeno(nombreViejo).subscribe({
+        next: () => {
+          this.configuracionService.modificarAlergeno(nombreNuevo).subscribe({
+            next: () => {
+              delete this.alergenos[nombreViejo];
+              this.alergenos[nombreNuevo] = true;
+              this.cerrarPopupAlergeno();
+            },
+            error: () => this.error = 'Error al guardar el nuevo nombre del alérgeno.'
+          });
+        },
+        error: () => this.error = 'Error al eliminar el alérgeno anterior.'
+      });
+    } else {
+      // Añadir o modificar sin cambio de nombre
+      this.configuracionService.modificarAlergeno(nombreNuevo).subscribe({
+        next: () => {
+          this.alergenos[nombreNuevo] = true;
+          this.cerrarPopupAlergeno();
+        },
+        error: () => this.error = 'Error al guardar el alérgeno.'
+      });
+    }
+  }
+
+  borrarAlergeno(nombre: string): void {
+    if (!confirm(`¿Eliminar el alérgeno "${nombre}"?`)) return;
+
+    this.configuracionService.eliminarAlergeno(nombre).subscribe({
+      next: () => { 
+        delete this.alergenos[nombre],
+        this.cerrarPopupAlergeno();
+      },
+      error: () => this.error = 'Error al eliminar el alérgeno.'
     });
   }
 

@@ -5,42 +5,32 @@
   </button>
 
   <nav class="flex flex-col space-y-2 mt-4 px-2 transition-all duration-300 items-center">
-    <!-- Redireccion a carta -->
+    <!-- ...enlaces de navegación... -->
     <a routerLink="/carta" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="BookText" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Carta</span>
     </a>
-
-    <!-- Redireccion a mesa -->
     <a *ngIf="esEmpleadoOAdmin()" routerLink="/mesas" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="utensils" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Mesas</span>
     </a>
-    
-    <!-- Redireccion a barra -->
     <a *ngIf="esEmpleadoOAdmin()" routerLink="/barra" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="cafe" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Barra</span>
     </a>
-    
-    <!-- Redireccion a cocina -->
     <a *ngIf="esEmpleadoOAdmin()" routerLink="/cocina" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="cocina" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Cocina</span>
     </a>
-
-    <!-- Redireccion a oferta-empleo -->
     <a routerLink="/oferta-empleo" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="login" class="w-5 h-5"></lucide-icon>
       <span *ngIf="!isCollapsed">Iniciar Sesión</span>
     </a>
-    
-    <!-- Redireccion a configuracion -->
     <a *ngIf="esAdmin()" routerLink="/configuracion" routerLinkActive="bg-gray-700"
        class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out">
       <lucide-icon name="my-icon" [img]="settings" class="w-5 h-5"></lucide-icon>
@@ -49,26 +39,15 @@
   </nav>
 </div>
 
-<!-- Botón menú móvil -->
-<button *ngIf="isMobile()" (click)="openMobileMenu()" class="fixed bottom-6 right-6 z-50 bg-blue-600 text-white p-4 rounded-full shadow-lg md:hidden">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-</button>
-
 <!-- Popup para móvil -->
-<ng-container *ngIf="isMobile() && showMobileMenu">
-  <ng-container *ngTemplateOutlet="mobileMenu"></ng-container>
-</ng-container>
-
-<ng-template #mobileMenu>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-    <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 w-11/12 max-w-xs flex flex-col gap-4">
-      <button class="self-end text-gray-500 hover:text-black dark:hover:text-white text-2xl" (click)="closeMobileMenu()">&times;</button>
-      <a routerLink="/carta" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Carta</a>
-      <a *ngIf="esEmpleadoOAdmin()" routerLink="/mesas" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Mesas</a>
-      <a *ngIf="esEmpleadoOAdmin()" routerLink="/barra" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Barra</a>
-      <a *ngIf="esEmpleadoOAdmin()" routerLink="/cocina" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Cocina</a>
-      <a routerLink="/oferta-empleo" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Iniciar Sesión</a>
-      <a *ngIf="esAdmin()" routerLink="/configuracion" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Configuración</a>
-    </div>
+<div *ngIf="isMobile() && showMobileMenu" class="fixed inset-0 z-50 flex items-center justify-center bg-opacity-60">
+  <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 w-11/12 max-w-xs flex flex-col gap-4">
+    <button class="self-end text-gray-500 hover:text-black dark:hover:text-white text-2xl" (click)="closeMobileMenu()">&times;</button>
+    <a routerLink="/carta" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Carta</a>
+    <a *ngIf="esEmpleadoOAdmin()" routerLink="/mesas" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Mesas</a>
+    <a *ngIf="esEmpleadoOAdmin()" routerLink="/barra" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Barra</a>
+    <a *ngIf="esEmpleadoOAdmin()" routerLink="/cocina" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Cocina</a>
+    <a routerLink="/oferta-empleo" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Iniciar Sesión</a>
+    <a *ngIf="esAdmin()" routerLink="/configuracion" (click)="closeMobileMenu()" class="block py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700">Configuración</a>
   </div>
-</ng-template>
+</div>

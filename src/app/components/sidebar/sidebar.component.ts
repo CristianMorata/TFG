@@ -29,6 +29,8 @@ export class SidebarComponent {
   usuario: User | null = null;
   tipoUsuario: string | null = null;
 
+  showMobileMenu = false;
+
   constructor(private authService: AuthService) {
     this.authService.user$.subscribe(user => {
       this.usuario = user;
@@ -50,5 +52,17 @@ export class SidebarComponent {
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
+  }
+
+  isMobile(): boolean {
+    return window.innerWidth < 768;
+  }
+
+  openMobileMenu() {
+    this.showMobileMenu = true;
+  }
+
+  closeMobileMenu() {
+    this.showMobileMenu = false;
   }
 }
