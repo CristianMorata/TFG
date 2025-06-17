@@ -57,17 +57,8 @@ export class MesaComponent {
       if (user) {
         this.authService.getUserRole(user.uid).then(tipo => {
           this.tipoUsuario = tipo;
-          // console.log('Tipo de usuario:', this.tipoUsuario);
-
-          // Verificar si el usuario es permitido en la página
-          // if (this.tipoUsuario !== 'admin' && this.tipoUsuario !== 'empleado') {
-          //   this.router.navigate(['/carta']); // o donde tú decidas
-          // }
         });
       }
-      //  else {
-      //   this.router.navigate(['/carta']);
-      // }
     });
 
     this.cargarProductos();
@@ -101,7 +92,13 @@ export class MesaComponent {
   }
 
   seleccionarProducto(producto: any) {
-    const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const formatter = new Intl.DateTimeFormat('es-ES', {
+      timeZone: 'Europe/Madrid',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    const horaActual = formatter.format(new Date());
     const anotacion = this.anotacionesPorProducto[producto.nombre] || '';
 
     const productoFinal = {
@@ -321,61 +318,40 @@ export class MesaComponent {
     this.mostrarPopupMetodoPago = true;
   }
 
-  // confirmarPedirCuenta() {
-  //   if (!this.metodoPagoSolicitado || !this.mesaId) return;
-
-  //   const estructura = {
-  //     efectivo: this.metodoPagoSolicitado === 'Efectivo',
-  //     tarjeta: this.metodoPagoSolicitado === 'Tarjeta',
-  //     ambos: this.metodoPagoSolicitado === 'Ambos'
-  //   };
-
-  //   this.service.actualizarLlamadaOCuenta(this.mesaId, null, estructura).subscribe({
-  //     next: () => {
-  //       alert('Se ha solicitado la cuenta correctamente');
-  //       this.mostrarPopupMetodoPago = false;
-  //     },
-  //     error: err => {
-  //       console.error('Error al solicitar la cuenta:', err);
-  //       alert('Error al solicitar la cuenta');
-  //     }
-  //   });
-  // }
-
   confirmarPedirCuenta() {
-  if (!this.metodoPagoSolicitado || !this.mesaId) return;
+    if (!this.metodoPagoSolicitado || !this.mesaId) return;
 
-  const estructura = {
-    efectivo: this.metodoPagoSolicitado === 'Efectivo',
-    tarjeta: this.metodoPagoSolicitado === 'Tarjeta',
-    ambos: this.metodoPagoSolicitado === 'Ambos'
-  };
+    const estructura = {
+      efectivo: this.metodoPagoSolicitado === 'Efectivo',
+      tarjeta: this.metodoPagoSolicitado === 'Tarjeta',
+      ambos: this.metodoPagoSolicitado === 'Ambos'
+    };
 
-  // 1. Actualiza la solicitud de cuenta (como ya hacías)
-  this.service.actualizarLlamadaOCuenta(this.mesaId, null, estructura).subscribe({
-    next: () => {
-      // 2. Cambia el estado de la mesa a "Pendiente de pago"
-      fetch('https://guardaromodificarmesa-rs2gjhs4iq-uc.a.run.app', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mesaId: this.mesaId,
-          contenido: this.mesaContenidoExistente,
-          estado: 'Pendiente de pago',
-          anotaciones: this.anotaciones
+    // Actualiza la solicitud de cuenta (como ya hacías)
+    this.service.actualizarLlamadaOCuenta(this.mesaId, null, estructura).subscribe({
+      next: () => {
+        // Cambia el estado de la mesa a "Pendiente de pago"
+        fetch('https://guardaromodificarmesa-rs2gjhs4iq-uc.a.run.app', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mesaId: this.mesaId,
+            contenido: this.mesaContenidoExistente,
+            estado: 'Pendiente de pago',
+            anotaciones: this.anotaciones
+          })
         })
-      })
-      .then(() => {
-        this.mesaEstadoActual = 'Pendiente de pago'; // Opcional: refresca el estado en la interfaz
-        alert('Se ha solicitado la cuenta correctamente');
-        this.mostrarPopupMetodoPago = false;
-        console.log(this.mesaEstadoActual);
-      });
-    },
-    error: err => {
-      console.error('Error al solicitar la cuenta:', err);
-      alert('Error al solicitar la cuenta');
-    }
-  });
-}
+          .then(() => {
+            this.mesaEstadoActual = 'Pendiente de pago'; // Opcional: refresca el estado en la interfaz
+            alert('Se ha solicitado la cuenta correctamente');
+            this.mostrarPopupMetodoPago = false;
+            console.log(this.mesaEstadoActual);
+          });
+      },
+      error: err => {
+        console.error('Error al solicitar la cuenta:', err);
+        alert('Error al solicitar la cuenta');
+      }
+    });
+  }
 }

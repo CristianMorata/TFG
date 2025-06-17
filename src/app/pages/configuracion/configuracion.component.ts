@@ -252,7 +252,7 @@ export class ConfiguracionComponent implements OnInit {
   filtroRangoInicio: string = '';
   filtroRangoFin: string = '';
   filtroSemana: string = '';
-  filtroMes: string = ''; // formato yyyy-MM
+  filtroMes: string = '';
   filtroAnio: string = '';
 
   private cargarHistorialMesas(): void {
