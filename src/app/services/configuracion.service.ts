@@ -41,6 +41,10 @@ export class ConfiguracionService {
     );
   }
 
+  eliminarCategoria(nombre: string) {
+    return this.http.post(`https://eliminarcategoria-rs2gjhs4iq-uc.a.run.app`, { nombre });
+  }
+
   getAlergenos(): Observable<any> {
     return this.http.get<any>(
       'https://obteneralergenos-rs2gjhs4iq-uc.a.run.app'

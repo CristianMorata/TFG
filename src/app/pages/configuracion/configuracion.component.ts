@@ -154,6 +154,18 @@ export class ConfiguracionComponent implements OnInit {
     });
   }
 
+  borrarCategoria(nombre: string): void {
+    if (!confirm(`¿Eliminar la categoría "${nombre}"?`)) return;
+
+    this.configuracionService.eliminarCategoria(nombre).subscribe({
+      next: () => {
+        delete this.categorias[nombre];
+        this.cerrarPopup();
+      },
+      error: () => this.error = 'Error al eliminar la categoría.'
+    });
+  }
+
   // Manejo de alérgenos
   alergenos: any = {};
   mostrarPopupAlergeno = false;

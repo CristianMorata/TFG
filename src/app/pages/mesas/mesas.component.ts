@@ -189,12 +189,7 @@ export class MesasComponent implements OnInit {
     if (mesa.estado === 'Libre') return 'bg-green-100 border-green-600 border-2 ';
     if (mesa.estado === 'Preparada') return 'bg-blue-100 border-blue-600 border-2 ';
     if (mesa.estado === 'Pendiente de pago') return 'bg-purple-100 border-purple-600 border-2 ';
-    if (mesa.estado === 'En preparación') {
-      const min = Math.min(mesa.tiempoEnPreparacion || 0, 2);
-      if (min < 1) return 'bg-yellow-100 border-yellow-500 border-2 ';   // suave
-      if (min < 2) return 'bg-yellow-300 border-yellow-600 border-2 ';   // medio
-      return 'bg-yellow-400 border-yellow-700 border-2 ';                // intenso
-    }
+    if (mesa.estado === 'En preparación') return 'bg-yellow-100 border-yellow-600 border-2 ';
     return 'bg-gray-100 border-gray-400 border-2 ';
   }
 }
