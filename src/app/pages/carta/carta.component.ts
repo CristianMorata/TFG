@@ -322,4 +322,10 @@ export class CartaComponent implements OnInit {
     const checked = input.checked;
     this.toggleAlergenoEditable(alergeno, checked);
   }
+
+  getCategoriasFiltradas(): string[] {
+    return this.categoriasSeleccionadas.length === 0
+      ? this.categoriasDisponibles
+      : this.categoriasSeleccionadas;
+  }
 }

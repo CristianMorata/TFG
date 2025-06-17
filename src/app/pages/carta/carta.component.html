@@ -15,41 +15,59 @@
 
   <!-- Filtro de alérgenos -->
   <div class="max-w-6xl mx-auto px-4 mb-6">
-    <div class="flex flex-wrap items-center gap-2 bg-white/70 dark:bg-gray-800/70 rounded-lg p-3 shadow">
-      <label class="font-medium mr-2">Filtrar por alérgenos:</label>
-      <label *ngFor="let alergeno of alergenosDisponibles"
-        class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded cursor-pointer shadow-sm hover:bg-blue-100 dark:hover:bg-blue-800 transition">
-        <input type="checkbox" [checked]="alergenosSeleccionados.includes(alergeno)"
-          (change)="onAlergenoCheckboxChange($event, alergeno)" class="accent-blue-600" />
-        <span class="text-sm">{{ alergeno }}</span>
-      </label>
-      <button type="button" (click)="limpiarAlergenos()"
-        class="ml-2 text-xs px-2 py-1 rounded bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500">Limpiar</button>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Filtrar por alérgenos</h2>
+        <button (click)="limpiarAlergenos()"
+          class="text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md shadow-sm transition">
+          Limpiar
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <label *ngFor="let alergeno of alergenosDisponibles"
+          class="cursor-pointer px-3 py-1 rounded-full text-sm font-medium shadow-sm transition-all duration-150 border flex items-center gap-2"
+          [ngClass]="{
+          'bg-green-600 text-white border-green-700': alergenosSeleccionados.includes(alergeno),
+          'bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600':
+            !alergenosSeleccionados.includes(alergeno)
+        }">
+          <input type="checkbox" [checked]="alergenosSeleccionados.includes(alergeno)"
+            (change)="onAlergenoCheckboxChange($event, alergeno)" class="hidden" />
+          {{ alergeno }}
+        </label>
+      </div>
     </div>
   </div>
 
   <!-- Filtro de categorías -->
   <div class="max-w-6xl mx-auto px-4 mb-6">
-    <div class="flex flex-wrap items-center gap-2 bg-white/70 dark:bg-gray-800/70 rounded-lg p-3 shadow mt-3">
-      <label class="font-medium mr-2">Filtrar por categorías:</label>
-      <label *ngFor="let categoria of categoriasDisponibles"
-        class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded cursor-pointer shadow-sm hover:bg-pink-100 dark:hover:bg-pink-800 transition">
-        <input type="checkbox" [checked]="categoriasSeleccionadas.includes(categoria)"
-          (change)="onCategoriaCheckboxChange($event, categoria)" class="accent-pink-600" />
-        <span class="text-sm">{{ categoria }}</span>
-      </label>
-      <button type="button" (click)="limpiarCategorias()"
-        class="ml-2 text-xs px-2 py-1 rounded bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500">Limpiar</button>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Filtrar por categorías</h2>
+        <button (click)="limpiarCategorias()"
+          class="text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md shadow-sm transition">
+          Limpiar
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <label *ngFor="let categoria of categoriasDisponibles"
+          class="cursor-pointer px-3 py-1 rounded-full text-sm font-medium shadow-sm transition-all duration-150 border flex items-center gap-2"
+          [ngClass]="{
+          'bg-blue-600 text-white border-blue-700': categoriasSeleccionadas.includes(categoria),
+          'bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600':
+            !categoriasSeleccionadas.includes(categoria)
+        }">
+          <input type="checkbox" [checked]="categoriasSeleccionadas.includes(categoria)"
+            (change)="onCategoriaCheckboxChange($event, categoria)" class="hidden" />
+          {{ categoria }}
+        </label>
+      </div>
     </div>
   </div>
 
   <!-- Secciones Parallax -->
-  <!-- Bebida -->
-<ng-container *ngFor="let categoria of categoriasDisponibles">
-  <section
-    [id]="categoria"
-    class="parallax-section relative bg-fixed bg-cover bg-center py-8"
-    [ngStyle]="{
+  <ng-container *ngFor="let categoria of getCategoriasFiltradas()">
+    <section [id]="categoria" class="parallax-section relative bg-fixed bg-cover bg-center py-8" [ngStyle]="{
       'background-image': categoria === 'bebida'
         ? 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZGRmZmVkIi8+PC9zdmc+)' :
       categoria === 'comida'
@@ -57,75 +75,67 @@
       categoria === 'helado'
         ? 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZmZmN2QwIi8+PC9zdmc+)' :
       'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZGRkZGRkIi8+PC9zdmc+)' 
-    }"
-  >
-    <div class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 pointer-events-none"></div>
-    <div class="relative max-w-6xl mx-auto px-4">
-      <h2
-        class="text-2xl md:text-3xl font-bold mb-4 drop-shadow-lg"
-        [ngClass]="{
+    }">
+      <div class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 pointer-events-none"></div>
+      <div class="relative max-w-6xl mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4 drop-shadow-lg" [ngClass]="{
           'text-green-700 dark:text-green-300': categoria === 'bebida',
           'text-pink-700 dark:text-pink-300': categoria === 'comida',
           'text-yellow-700 dark:text-yellow-300': categoria === 'helado',
           'text-blue-700 dark:text-blue-300': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
-        }"
-      >
-        {{ categoria | titlecase }}
-      </h2>
-      <ng-container *ngIf="getProductosPorCategoria(categoria).length > 0; else sinProductos">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <article
-            *ngFor="let producto of getProductosPorCategoria(categoria)"
-            class="relative bg-white/90 dark:bg-gray-900/80 rounded-2xl shadow p-4 border-2
-              hover:scale-105 transition"
-            [ngClass]="{
-              'border-green-100 dark:border-green-900': categoria === 'bebida',
-              'border-pink-100 dark:border-pink-900': categoria === 'comida',
-              'border-yellow-100 dark:border-yellow-900': categoria === 'helado',
-              'border-blue-100 dark:border-blue-900': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
-            }"
-          >
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ producto.nombre }}</h3>
-            <p class="text-gray-600 dark:text-gray-300 text-sm mb-1 truncate">
-              {{ producto.descripcion || 'Sin descripción.' }}
-            </p>
-            <p class="text-gray-900 dark:text-gray-100 font-bold text-lg">{{ producto.precio }}€</p>
-            <div class="flex flex-wrap gap-1 mt-2">
-              <span
-                *ngFor="let al of producto.alergenos"
-                class="px-2 py-0.5 rounded text-xs"
-                [ngClass]="{
-                  'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200': categoria === 'bebida',
-                  'bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-200': categoria === 'comida',
-                  'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200': categoria === 'helado',
-                  'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
-                }"
-              >
-                {{ al }}
-              </span>
-            </div>
-            <button
-              *ngIf="puedeEditar()"
-              (click)="verDetalles(producto)"
-              class="absolute bottom-4 right-4 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition"
+        }">
+          {{ categoria | titlecase }}
+        </h2>
+        <ng-container *ngIf="getProductosPorCategoria(categoria).length > 0; else sinProductos">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <article *ngFor="let producto of getProductosPorCategoria(categoria)"
+              class="group relative bg-white/90 dark:bg-gray-900/80 rounded-2xl shadow-lg p-5 border-2 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
               [ngClass]="{
-                'bg-green-600 hover:bg-green-700': categoria === 'bebida',
-                'bg-pink-600 hover:bg-pink-700': categoria === 'comida',
-                'bg-yellow-600 hover:bg-yellow-700': categoria === 'helado',
-                'bg-blue-600 hover:bg-blue-700': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
-              }"
-            >
-              Ver más
-            </button>
-          </article>
-        </div>
-      </ng-container>
-      <ng-template #sinProductos>
-        <p class="text-center text-gray-500 mt-10">No hay productos disponibles.</p>
-      </ng-template>
-    </div>
-  </section>
-</ng-container>
+    'border-green-100 dark:border-green-900': categoria === 'bebida',
+    'border-pink-100 dark:border-pink-900': categoria === 'comida',
+    'border-yellow-100 dark:border-yellow-900': categoria === 'helado',
+    'border-blue-100 dark:border-blue-900': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
+  }">
+              <!-- Cinta de novedad -->
+              <div *ngIf="producto.novedad"
+                class="absolute top-0 left-0 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-br-lg z-10 shadow-md">
+                Novedad
+              </div>
+
+              <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-1 truncate">{{ producto.nombre }}</h3>
+
+              <p class="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2 italic">
+                {{ producto.descripcion || 'Sin descripción.' }}
+              </p>
+
+              <p class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">{{ producto.precio }}€</p>
+
+              <div class="flex flex-wrap gap-1 mb-3">
+                <span *ngFor="let al of producto.alergenos" class="px-2 py-0.5 rounded text-xs font-medium" [ngClass]="{
+        'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200': categoria === 'bebida',
+        'bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-200': categoria === 'comida',
+        'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200': categoria === 'helado',
+        'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
+      }">
+                  {{ al }}
+                </span>
+              </div>
+
+              <div class="absolute bottom-4 right-4">
+                <button *ngIf="puedeEditar()" (click)="verDetalles(producto)"
+                  class="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white text-sm font-semibold px-4 py-1.5 rounded-full shadow-md transition-all">
+                  Ver más
+                </button>
+              </div>
+            </article>
+          </div>
+        </ng-container>
+        <ng-template #sinProductos>
+          <p class="text-center text-gray-500 mt-10">No hay productos disponibles.</p>
+        </ng-template>
+      </div>
+    </section>
+  </ng-container>
 
 
   <!-- Modal para añadir producto -->
