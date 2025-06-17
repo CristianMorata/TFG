@@ -23,7 +23,7 @@
           class="p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <span class="font-semibold text-blue-700 dark:text-blue-200">{{ p.nombre }}</span>
-            <span class="text-gray-600 dark:text-gray-300">- {{ p.precio | currency }}</span>
+            <span class="text-gray-600 dark:text-gray-300">- {{ p.precio }}€</span>
             <span class="text-xs text-gray-500 ml-2">(añadido por {{ p.anadidoPor }} a las {{ p.hora }})</span>
             <div *ngIf="p.estado" class="text-sm italic text-orange-500">Estado: {{ p.estado }}</div>
             <div *ngIf="p.anotacion" class="text-sm italic text-gray-500">Anotación: {{ p.anotacion }}</div>
@@ -48,29 +48,41 @@
     <!-- Botones de edición y cierre -->
     <div class="flex flex-wrap gap-3 mb-6 justify-center">
       <button *ngIf="mesaExiste && !modoEdicion" (click)="activarModoEdicion()"
-        class="flex-1 min-w-[120px] bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg shadow transition font-semibold">
+        class="flex-1 min-w-[120px] bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-xl shadow-lg transition font-semibold
+         focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 active:scale-95">
         Editar mesa
       </button>
       <button *ngIf="modoEdicion" (click)="guardarCambiosMesaEditada()"
-        class="flex-1 min-w-[120px] bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition font-semibold">
-        Guardar cambios
+        class="flex-1 min-w-[120px] bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow-lg transition font-semibold
+         focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 active:scale-95">
+         Guardar cambios
       </button>
       <button *ngIf="modoEdicion" (click)="deshacerCambios()"
-        class="flex-1 min-w-[120px] bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg shadow transition font-semibold">
+        class="flex-1 min-w-[120px] bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-xl shadow-lg transition font-semibold
+         focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 active:scale-95">
         Deshacer cambios
       </button>
       <button *ngIf="mesaExiste && esEmpleadoOAdmin()" (click)="abrirPopupCierreMesa()"
-        class="flex-1 min-w-[120px] bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow transition font-semibold">
+        class="flex-1 min-w-[120px] bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow-lg transition font-semibold
+         focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 active:scale-95">
         Cerrar mesa
       </button>
       <button *ngIf="mesaExiste" (click)="llamarCamarero()"
-        class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow font-semibold">
+        class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl shadow-lg transition font-semibold
+         focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 active:scale-95">
         Llamar camarero
       </button>
 
       <button *ngIf="mesaExiste" (click)="abrirPopupPedirCuenta()"
-        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg shadow font-semibold">
-        Pedir cuenta
+        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl shadow-lg transition font-semibold
+         focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95">
+         Pedir cuenta
+      </button>
+
+      <button *ngIf="esEmpleadoOAdmin()" (click)="abrirSelectorProductos()"
+        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow-lg transition font-semibold
+         focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 active:scale-95">
+         Añadir producto
       </button>
     </div>
 
@@ -86,14 +98,7 @@
         </li>
       </ul>
     </div>
-
-    <!-- Botón añadir producto centrado debajo -->
-    <div class="flex justify-center mb-8">
-      <button *ngIf="esEmpleadoOAdmin()" (click)="abrirSelectorProductos()"
-        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl shadow-lg transition text-lg font-semibold">
-        + Añadir producto
-      </button>
-    </div>
+    
   </div>
 
   <!-- Popup selección de productos -->

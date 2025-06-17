@@ -25,13 +25,23 @@
     <!-- Categorías -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex flex-col gap-4">
       <div class="flex items-center justify-between mb-2">
-        <h2 class="text-xl font-semibold text-green-700 dark:text-green-300">Categorías</h2>
-        <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded shadow" (click)="abrirPopup()">+ Nueva</button>
+        <h2 class="text-2xl font-bold text-green-700 dark:text-green-300">Categorías</h2>
+        <!-- <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded shadow" (click)="abrirPopup()">+ Nueva</button> -->
+        <button
+          class="px-4 py-2 bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-105 flex items-center gap-2"
+          (click)="abrirPopup()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+          Nueva
+        </button>
       </div>
       <ul class="divide-y divide-gray-200 dark:divide-gray-700">
         <li *ngFor="let nombre of getCategoriasKeys()" class="flex justify-between items-center py-2">
           <span class="truncate">{{ nombre }} <span class="text-xs text-gray-500">({{ categorias[nombre].destino }})</span></span>
-          <button class="text-blue-600 hover:underline" (click)="abrirPopup(nombre)">Modificar</button>
+          <button class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium rounded-lg shadow transition-all duration-150 hover:scale-105" (click)="abrirPopup(nombre)">
+            Modificar
+          </button>
         </li>
       </ul>
     </div>
@@ -39,13 +49,26 @@
     <!-- Alérgenos -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 flex flex-col gap-4 md:col-span-2">
       <div class="flex items-center justify-between mb-2">
-        <h2 class="text-xl font-semibold text-yellow-700 dark:text-yellow-300">Alérgenos</h2>
-        <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded shadow" (click)="abrirPopupAlergeno()">+ Nuevo</button>
+        <h2 class="text-2xl font-bold text-yellow-700 dark:text-yellow-300">Alérgenos</h2>
+        <!-- <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded shadow" (click)="abrirPopupAlergeno()">+ Nuevo</button> -->
+        <button
+          class="px-4 py-2 bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-105 flex items-center gap-2"
+          (click)="abrirPopupAlergeno()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+          Nuevo
+        </button>
       </div>
       <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
         <li *ngFor="let nombre of getAlergenosKeys()" class="flex justify-between items-center bg-gray-100 dark:bg-gray-700 rounded px-3 py-2">
           <span class="truncate">{{ nombre }}</span>
-          <button class="text-blue-600 hover:underline" (click)="abrirPopupAlergeno(nombre)">Modificar</button>
+          <!-- <button class="text-blue-600 hover:underline" (click)="abrirPopupAlergeno(nombre)">Modificar</button> -->
+          <button
+            class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium rounded-lg shadow transition-all duration-150 hover:scale-105"
+            (click)="abrirPopupAlergeno(nombre)">
+              Modificar
+          </button>
         </li>
       </ul>
     </div>
@@ -71,7 +94,12 @@
         </label>
       </div>
       <div class="flex justify-end gap-2">
-        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded" (click)="guardarCategoria()">
+        <!-- <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded" (click)="guardarCategoria()">
+          {{ modoEdicion ? 'Guardar cambios' : 'Añadir' }}
+        </button> -->
+        <button
+          class="px-4 py-2 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-105"
+          (click)="guardarCategoria()">
           {{ modoEdicion ? 'Guardar cambios' : 'Añadir' }}
         </button>
       </div>

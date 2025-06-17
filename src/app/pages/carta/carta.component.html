@@ -45,108 +45,91 @@
 
   <!-- Secciones Parallax -->
   <!-- Bebida -->
-  <section id="bebida" class="parallax-section relative bg-fixed bg-cover bg-center py-8"
-    style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZGRmZmVkIi8+PC9zdmc+');">
-    <!-- Overlay para contraste -->
+<ng-container *ngFor="let categoria of categoriasDisponibles">
+  <section
+    [id]="categoria"
+    class="parallax-section relative bg-fixed bg-cover bg-center py-8"
+    [ngStyle]="{
+      'background-image': categoria === 'bebida'
+        ? 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZGRmZmVkIi8+PC9zdmc+)' :
+      categoria === 'comida'
+        ? 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZmVkZWZlIi8+PC9zdmc+)' :
+      categoria === 'helado'
+        ? 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZmZmN2QwIi8+PC9zdmc+)' :
+      'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZGRkZGRkIi8+PC9zdmc+)' 
+    }"
+  >
     <div class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 pointer-events-none"></div>
     <div class="relative max-w-6xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold text-green-700 dark:text-green-300 mb-4 drop-shadow-lg">Bebida</h2>
-      <ng-container *ngIf="getProductosPorCategoria('bebida').length > 0; else sinBebida">
+      <h2
+        class="text-2xl md:text-3xl font-bold mb-4 drop-shadow-lg"
+        [ngClass]="{
+          'text-green-700 dark:text-green-300': categoria === 'bebida',
+          'text-pink-700 dark:text-pink-300': categoria === 'comida',
+          'text-yellow-700 dark:text-yellow-300': categoria === 'helado',
+          'text-blue-700 dark:text-blue-300': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
+        }"
+      >
+        {{ categoria | titlecase }}
+      </h2>
+      <ng-container *ngIf="getProductosPorCategoria(categoria).length > 0; else sinProductos">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <article *ngFor="let producto of getProductosPorCategoria('bebida')"
-            class="relative bg-white/90 dark:bg-gray-900/80 rounded-2xl shadow p-4 border-2 border-green-100 dark:border-green-900 hover:scale-105 transition">
+          <article
+            *ngFor="let producto of getProductosPorCategoria(categoria)"
+            class="relative bg-white/90 dark:bg-gray-900/80 rounded-2xl shadow p-4 border-2
+              hover:scale-105 transition"
+            [ngClass]="{
+              'border-green-100 dark:border-green-900': categoria === 'bebida',
+              'border-pink-100 dark:border-pink-900': categoria === 'comida',
+              'border-yellow-100 dark:border-yellow-900': categoria === 'helado',
+              'border-blue-100 dark:border-blue-900': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
+            }"
+          >
             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ producto.nombre }}</h3>
             <p class="text-gray-600 dark:text-gray-300 text-sm mb-1 truncate">
               {{ producto.descripcion || 'Sin descripción.' }}
             </p>
             <p class="text-gray-900 dark:text-gray-100 font-bold text-lg">{{ producto.precio }}€</p>
             <div class="flex flex-wrap gap-1 mt-2">
-              <span *ngFor="let al of producto.alergenos"
-                class="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200 px-2 py-0.5 rounded text-xs">{{
-                al }}</span>
+              <span
+                *ngFor="let al of producto.alergenos"
+                class="px-2 py-0.5 rounded text-xs"
+                [ngClass]="{
+                  'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200': categoria === 'bebida',
+                  'bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-200': categoria === 'comida',
+                  'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200': categoria === 'helado',
+                  'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
+                }"
+              >
+                {{ al }}
+              </span>
             </div>
-            <button *ngIf="puedeEditar()" (click)="verDetalles(producto)"
-              class="absolute bottom-4 right-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition">
+            <button
+              *ngIf="puedeEditar()"
+              (click)="verDetalles(producto)"
+              class="absolute bottom-4 right-4 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition"
+              [ngClass]="{
+                'bg-green-600 hover:bg-green-700': categoria === 'bebida',
+                'bg-pink-600 hover:bg-pink-700': categoria === 'comida',
+                'bg-yellow-600 hover:bg-yellow-700': categoria === 'helado',
+                'bg-blue-600 hover:bg-blue-700': categoria !== 'bebida' && categoria !== 'comida' && categoria !== 'helado'
+              }"
+            >
               Ver más
             </button>
           </article>
         </div>
       </ng-container>
-      <ng-template #sinBebida>
-        <p class="text-center text-gray-500 mt-10">No hay bebidas disponibles.</p>
+      <ng-template #sinProductos>
+        <p class="text-center text-gray-500 mt-10">No hay productos disponibles.</p>
       </ng-template>
     </div>
   </section>
-
-  <!-- Comida -->
-  <section id="comida" class="parallax-section relative bg-fixed bg-cover bg-center py-8"
-    style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZmVkZWZlIi8+PC9zdmc+');">
-    <div class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 pointer-events-none"></div>
-    <div class="relative max-w-6xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold text-pink-700 dark:text-pink-300 mb-4 drop-shadow-lg">Comida</h2>
-      <ng-container *ngIf="getProductosPorCategoria('comida').length > 0; else sinComida">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <article *ngFor="let producto of getProductosPorCategoria('comida')"
-            class="relative bg-white/90 dark:bg-gray-900/80 rounded-2xl shadow p-4 border-2 border-pink-100 dark:border-pink-900 hover:scale-105 transition">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ producto.nombre }}</h3>
-            <p class="text-gray-600 dark:text-gray-300 text-sm mb-1 truncate">
-              {{ producto.descripcion || 'Sin descripción.' }}
-            </p>
-            <p class="text-gray-900 dark:text-gray-100 font-bold text-lg">{{ producto.precio }}€</p>
-            <div class="flex flex-wrap gap-1 mt-2">
-              <span *ngFor="let al of producto.alergenos"
-                class="bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-200 px-2 py-0.5 rounded text-xs">{{ al
-                }}</span>
-            </div>
-            <button *ngIf="puedeEditar()" (click)="verDetalles(producto)"
-              class="absolute bottom-4 right-4 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition">
-              Ver más
-            </button>
-          </article>
-        </div>
-      </ng-container>
-      <ng-template #sinComida>
-        <p class="text-center text-gray-500 mt-10">No hay comidas disponibles.</p>
-      </ng-template>
-    </div>
-  </section>
-
-  <!-- Helado -->
-  <section id="helado" class="parallax-section relative bg-fixed bg-cover bg-center py-8"
-    style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDQwMCIgZmlsbD0ibm9uZSIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCwwIEM0MDAsMzAwIDExMDAsLTUwIDE2MDAsNDAwIEwwLDQwMCBaIiBmaWxsPSIjZmZmN2QwIi8+PC9zdmc+');">
-    <div class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 pointer-events-none"></div>
-    <div class="relative max-w-6xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold text-yellow-700 dark:text-yellow-300 mb-4 drop-shadow-lg">Helado</h2>
-      <ng-container *ngIf="getProductosPorCategoria('helado').length > 0; else sinHelado">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <article *ngFor="let producto of getProductosPorCategoria('helado')"
-            class="relative bg-white/90 dark:bg-gray-900/80 rounded-2xl shadow p-4 border-2 border-yellow-100 dark:border-yellow-900 hover:scale-105 transition">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ producto.nombre }}</h3>
-            <p class="text-gray-600 dark:text-gray-300 text-sm mb-1 truncate">
-              {{ producto.descripcion || 'Sin descripción.' }}
-            </p>
-            <p class="text-gray-900 dark:text-gray-100 font-bold text-lg">{{ producto.precio }}€</p>
-            <div class="flex flex-wrap gap-1 mt-2">
-              <span *ngFor="let al of producto.alergenos"
-                class="bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200 px-2 py-0.5 rounded text-xs">{{
-                al }}</span>
-            </div>
-            <button *ngIf="puedeEditar()" (click)="verDetalles(producto)"
-              class="absolute bottom-4 right-4 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium px-3 py-1 rounded-lg shadow-md transition">
-              Ver más
-            </button>
-          </article>
-        </div>
-      </ng-container>
-      <ng-template #sinHelado>
-        <p class="text-center text-gray-500 mt-10">No hay helados disponibles.</p>
-      </ng-template>
-    </div>
-  </section>
+</ng-container>
 
 
   <!-- Modal para añadir producto -->
-  <div *ngIf="mostrarFormularioNuevo" Add commentMore actions
+  <div *ngIf="mostrarFormularioNuevo"
     class="fixed inset-0 z-50 backdrop-blur-sm backdrop-brightness-75 flex items-center justify-center">
     <form (ngSubmit)="anadirProducto(nuevoProducto); mostrarFormularioNuevo = false"
       class="bg-white/90 rounded-2xl shadow-xl p-6 max-w-lg w-full relative space-y-4">

@@ -304,20 +304,52 @@ export class BarraComponent implements OnInit {
 
     const toastEl = document.createElement('div');
     toastEl.id = toastId;
-    toastEl.className = 'toast-element fixed right-5 bottom-[var(--offset)] bg-yellow-500 text-white p-4 rounded-lg shadow-lg z-50 transition-all';
     toastEl.textContent = mensaje;
+    toastEl.className = `
+    toast-element fixed right-5 bottom-[var(--offset)]
+    bg-yellow-100/95 border-2 border-yellow-500 text-yellow-900
+    px-6 py-4 rounded-2xl shadow-2xl z-50 flex items-center gap-3
+    font-semibold text-base
+    animate-fade-in-up
+    transition-all
+  `;
 
-    // Posicionar los toast en columnas
-    const existingToasts = document.querySelectorAll('.toast-element');
-    const offset = 20 + (existingToasts.length * 80);
-    toastEl.style.setProperty('--offset', `${offset}px`);
+  // Icono de campana SVG
+  toastEl.innerHTML = `
+    <svg class="w-6 h-6 text-yellow-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+    </svg>
+    <span>${mensaje}</span>
+  `;
 
-    document.body.appendChild(toastEl);
+  // Posicionar los toast en columnas
+  const existingToasts = document.querySelectorAll('.toast-element');
+  const offset = 20 + (existingToasts.length * 80);
+  toastEl.style.setProperty('--offset', `${offset}px`);
 
-    // Eliminar después de 5 segundos
-    setTimeout(() => {
-      toastEl.remove();
-    }, 5000);
+  // Animación fade-in-up (puedes añadir esto a tu CSS global)
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .animate-fade-in-up {
+      animation: fade-in-up 0.5s cubic-bezier(.4,0,.2,1);
+    }
+  `;
+  document.head.appendChild(style);
+
+  document.body.appendChild(toastEl);
+
+  // Eliminar después de 5 segundos
+  setTimeout(() => {
+    toastEl.classList.remove('animate-fade-in-up');
+    toastEl.style.opacity = '0';
+    toastEl.style.transform = 'translateY(40px)';
+    setTimeout(() => toastEl.remove(), 400);
+  }, 5000);
   }
 
   confirmarSolicitud(mesaId: string, tipo: 'camarero' | 'cuenta') {
