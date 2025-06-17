@@ -103,6 +103,30 @@ exports.obtenerCategorias = onRequest((req, res) => {
     });
 });
 
+exports.eliminarCategoria = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        const { nombre } = req.body;
+
+        if (typeof nombre !== "string" || !nombre.trim()) {
+            return res.status(400).json({
+                error: "Debe incluir 'nombre' de la categoría a eliminar"
+            });
+        }
+
+        try {
+            const ref = db.ref(`configuracion/categorias/${nombre}`);
+            await ref.remove();
+
+            return res.status(200).json({
+                mensaje: `Categoría '${nombre}' eliminada correctamente`
+            });
+        } catch (err) {
+            console.error("Error al eliminar categoría:", err);
+            return res.status(500).json({ error: "Error al eliminar categoría" });
+        }
+    });
+});
+
 // Sección de alérgenos
 exports.modificarAlergeno = onRequest((req, res) => {
     corsHandler(req, res, async () => {
