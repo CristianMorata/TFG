@@ -60,4 +60,9 @@ export class ConfiguracionService {
       { nombre: nombreAlergeno }
     );
   }
+
+  // Obtener y administrar el historial de mesas cerradas
+  getHistorialMesas(): Observable<any> {
+    return this.http.get('https://listarhistorialmesas-rs2gjhs4iq-uc.a.run.app/');
+  }
 }

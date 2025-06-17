@@ -109,6 +109,8 @@ export class ConfiguracionComponent implements OnInit {
       next: (data) => this.alergenos = data.alergenos,
       error: () => this.error = 'No se pudieron cargar los alérgenos.'
     });
+
+    this.cargarHistorialMesas();
   }
 
   // Manejo de categorías
@@ -223,6 +225,129 @@ export class ConfiguracionComponent implements OnInit {
       },
       error: () => this.error = 'Error al eliminar el alérgeno.'
     });
+  }
+
+  // Manejo del historial de mesas
+  historialMesasRaw: any = {};
+  historialAgrupado: { fecha: string; mesas: any[] }[] = [];
+  errorHistorial: string | null = null;
+
+  mostrarPopupFiltro = false;
+  tipoFiltro: 'dia' | 'rango' | 'semana' | 'mes' | 'anio' | null = null;
+
+  // Inputs de filtro
+  filtroDia: string = '';
+  filtroRangoInicio: string = '';
+  filtroRangoFin: string = '';
+  filtroSemana: string = '';
+  filtroMes: string = ''; // formato yyyy-MM
+  filtroAnio: string = '';
+
+  private cargarHistorialMesas(): void {
+    this.configuracionService.getHistorialMesas().subscribe({
+      next: (data) => {
+        this.historialMesasRaw = data.historial || {}; // 👈 ESTO FALTABA
+
+        const fechas = Object.keys(this.historialMesasRaw).sort((a, b) => {
+          const [d1, m1, y1] = a.split('-').map(Number);
+          const [d2, m2, y2] = b.split('-').map(Number);
+          return new Date(y2, m2 - 1, d2).getTime() - new Date(y1, m1 - 1, d1).getTime();
+        });
+
+        this.historialAgrupado = fechas.map(fecha => {
+          const mesasObj = this.historialMesasRaw[fecha];
+          const mesas = Object.entries(mesasObj).map(([mesaHora, datos]) => ({
+            mesaHora,
+            ...(datos as object)
+          }));
+          return { fecha, mesas };
+        });
+      },
+      error: () => {
+        this.errorHistorial = 'No se pudo cargar el historial de mesas.';
+      }
+    });
+  }
+
+  abrirPopupFiltro(): void {
+    this.mostrarPopupFiltro = true;
+    this.tipoFiltro = null;
+    this.filtroDia = '';
+    this.filtroRangoInicio = '';
+    this.filtroRangoFin = '';
+    this.filtroSemana = '';
+    this.filtroMes = '';
+    this.filtroAnio = '';
+  }
+
+  cerrarPopupFiltro(): void {
+    this.mostrarPopupFiltro = false;
+  }
+
+  seleccionarTipoFiltro(tipo: typeof this.tipoFiltro): void {
+    this.tipoFiltro = tipo;
+  }
+
+  filtrarHistorial(): void {
+    let fechasFiltradas: string[] = [];
+
+    if (this.tipoFiltro === 'dia' && this.filtroDia) {
+      const fecha = new Date(this.filtroDia);
+      fechasFiltradas = [this.formatearFecha(fecha)];
+
+    } else if (this.tipoFiltro === 'rango' && this.filtroRangoInicio && this.filtroRangoFin) {
+      const inicio = new Date(this.filtroRangoInicio);
+      const fin = new Date(this.filtroRangoFin);
+      const current = new Date(inicio);
+      while (current <= fin) {
+        fechasFiltradas.push(this.formatearFecha(current));
+        current.setDate(current.getDate() + 1);
+      }
+
+    } else if (this.tipoFiltro === 'semana' && this.filtroSemana) {
+      const inicio = new Date(this.filtroSemana);
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(inicio);
+        d.setDate(d.getDate() + i);
+        fechasFiltradas.push(this.formatearFecha(d));
+      }
+
+    } else if (this.tipoFiltro === 'mes' && this.filtroMes) {
+      const [anio, mes] = this.filtroMes.split('-');
+      fechasFiltradas = Object.keys(this.historialMesasRaw).filter(f => {
+        const [d, m, a] = f.split('-');
+        return m === mes && a === anio;
+      });
+
+    } else if (this.tipoFiltro === 'anio' && this.filtroAnio) {
+      fechasFiltradas = Object.keys(this.historialMesasRaw).filter(f => {
+        const [, , a] = f.split('-');
+        return a === this.filtroAnio.toString();
+      });
+    }
+
+    const agrupado = fechasFiltradas.reduce((acc: any[], fecha) => {
+      const mesasObj = this.historialMesasRaw[fecha];
+      if (!mesasObj) return acc;
+
+      const mesas = Object.entries(mesasObj).map(([mesaHora, datos]) => ({
+        mesaHora,
+        ...(datos as object)
+      }));
+
+      acc.push({ fecha, mesas });
+      return acc;
+    }, []);
+
+    this.historialAgrupado = agrupado;
+    this.cerrarPopupFiltro();
+  }
+
+  formatearFecha(fecha: Date): string {
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+    const anio = fecha.getFullYear();
+    return `${dia}-${mes}-${anio}`;
   }
 
   // Control de usuario
