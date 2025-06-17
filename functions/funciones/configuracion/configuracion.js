@@ -166,3 +166,17 @@ exports.eliminarAlergeno = onRequest((req, res) => {
         }
     });
 });
+
+exports.listarHistorialMesas = onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        try {
+            const snapshot = await db.ref('historial-mesas').once('value');
+            const historial = snapshot.val() || {};
+
+            return res.status(200).json({ historial });
+        } catch (error) {
+            console.error("Error al listar historial de mesas:", error);
+            return res.status(500).send("Error interno del servidor");
+        }
+    });
+});
